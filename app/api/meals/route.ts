@@ -8,6 +8,7 @@ import { targetsFromUser, totalsToText, totalsForMeals } from "@/lib/nutrition";
 import { ruleSuggestion } from "@/lib/suggestions";
 import { fetchVisibleMeals, recordMeal } from "@/lib/meal-service";
 import { mealToDto, dayKeyFor } from "@/lib/stats";
+import { parseBackdate } from "@/lib/backdate";
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
@@ -100,6 +101,10 @@ export async function POST(request: Request) {
     const tzOffsetMin = Number(form.get("tzOffsetMinutes") ?? "0") || 0;
     const dayKey = dayKeyFor(Date.now(), tzOffsetMin);
 
+    // backdate from relative time words ("yesterday", "2 days ago", ...);
+    // the AI gets the description with the time phrase removed
+    const { clean, createdAt } = parseBackdate(description);
+
     // today's totals so far (me scope) - for the suggestion and the AI prompt
     const since = Date.now() - 3 * MS_DAY - tzOffsetMin * 60_000;
     const visible = await fetchVisibleMeals(user.id, since);
@@ -119,7 +124,7 @@ export async function POST(request: Request) {
     }
 
     const estimate = await analyzeMeal({
-      description,
+      description: clean,
       imageDataUri: imageDataUri || null,
       apiKey,
       model: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
@@ -154,6 +159,7 @@ export async function POST(request: Request) {
         confidence: estimate.confidence,
         source: "ai",
         suggestion,
+        ...(createdAt ? { createdAt } : {}),
       },
       user.id,
       tzOffsetMin

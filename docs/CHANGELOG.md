@@ -13,4 +13,9 @@
   goals and diet keywords such as weight loss, low sodium, low sugar, low
   carb, high protein) with an "Apply to daily targets" button. BMI and body
   data are also included in the AI context for portion estimates.
+- [Feature] Backdating: descriptions containing relative time words
+  ("yesterday", "last night", "N days ago", "the day before yesterday",
+  "this morning") record the meal on that date instead of today. The time
+  phrase is stripped from the text sent to the AI. Record whenever you
+  remember - no pressure.
 
