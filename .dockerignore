@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.tmp
+.env
+.env.*
+users.config.json
+Dockerfile
+docker-compose.yml
+docs
+README.md
+*.md

@@ -38,3 +38,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local tooling caches (sandbox)
+/.tmp/
+
+# local user config (seeded into DB on start; example committed)
+/users.config.json
+/.npmrc

@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kaja-db
+    environment:
+      POSTGRES_USER: kaja
+      POSTGRES_PASSWORD: kaja_dev
+      POSTGRES_DB: kaja
+    ports:
+      - "5433:5432"
+    volumes:
+      - kaja-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kaja"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  kaja-db-data:
