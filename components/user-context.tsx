@@ -8,6 +8,8 @@ export interface UserDto {
   bio: string;
   goals: string;
   diet: string;
+  heightCm: number | null;
+  weightKg: number | null;
   targetKcal: number;
   targetProteinG: number;
   targetFatG: number;

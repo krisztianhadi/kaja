@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Sparkles } from "lucide-react";
 import { api } from "@/lib/api";
 import { useUser } from "@/components/user-context";
+import { bmiCategory, computeBmi, recommendedTargets } from "@/lib/body";
 import { Button, Card, CardContent, Input, Label, Textarea } from "@/components/ui";
 
 function NumberField({
@@ -43,6 +45,12 @@ export function SettingsForm() {
   const [bio, setBio] = useState(user?.bio ?? "");
   const [goals, setGoals] = useState(user?.goals ?? "");
   const [diet, setDiet] = useState(user?.diet ?? "");
+  const [heightCm, setHeightCm] = useState(
+    user?.heightCm != null ? String(user.heightCm) : ""
+  );
+  const [weightKg, setWeightKg] = useState(
+    user?.weightKg != null ? String(user.weightKg) : ""
+  );
   const [targets, setTargets] = useState({
     targetKcal: user?.targetKcal ?? 2000,
     targetProteinG: user?.targetProteinG ?? 50,
@@ -56,8 +64,35 @@ export function SettingsForm() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const h = heightCm.trim() === "" ? null : Number(heightCm);
+  const w = weightKg.trim() === "" ? null : Number(weightKg);
+  const bmi = computeBmi(h, w);
+  const recommended = useMemo(
+    () =>
+      recommendedTargets({
+        heightCm: h,
+        weightKg: w,
+        goals,
+        diet,
+      }),
+    [h, w, goals, diet]
+  );
+
   function setTarget(key: keyof typeof targets) {
     return (v: number) => setTargets((prev) => ({ ...prev, [key]: v }));
+  }
+
+  function applyRecommended() {
+    if (!recommended) return;
+    setTargets({
+      targetKcal: recommended.kcal,
+      targetProteinG: recommended.proteinG,
+      targetFatG: recommended.fatG,
+      targetCarbsG: recommended.carbsG,
+      targetSugarG: recommended.sugarG,
+      targetSodiumMg: recommended.sodiumMg,
+    });
+    setSaved(false);
   }
 
   async function save(e: React.FormEvent) {
@@ -70,6 +105,8 @@ export function SettingsForm() {
       bio,
       goals,
       diet,
+      heightCm: heightCm.trim() === "" ? null : Math.round(Number(heightCm)),
+      weightKg: weightKg.trim() === "" ? null : Number(weightKg),
       ...targets,
     };
 
@@ -144,6 +181,89 @@ export function SettingsForm() {
               rows={2}
             />
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="space-y-3 pt-4">
+          <h2 className="text-sm font-semibold">Body</h2>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label htmlFor="heightCm">Height (cm)</Label>
+              <Input
+                id="heightCm"
+                type="number"
+                min={50}
+                max={300}
+                value={heightCm}
+                onChange={(e) => setHeightCm(e.target.value)}
+                placeholder="e.g. 175"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="weightKg">Current weight (kg)</Label>
+              <Input
+                id="weightKg"
+                type="number"
+                min={10}
+                max={500}
+                step="0.1"
+                value={weightKg}
+                onChange={(e) => setWeightKg(e.target.value)}
+                placeholder="e.g. 72.5"
+              />
+            </div>
+          </div>
+
+          {bmi !== null && (
+            <p className="text-sm">
+              BMI: <span className="font-medium">{bmi.toFixed(1)}</span>{" "}
+              <span className="text-muted-foreground">
+                ({bmiCategory(bmi)})
+              </span>
+            </p>
+          )}
+
+          {recommended && (
+            <div className="space-y-2 rounded-md bg-secondary/50 p-3">
+              <div className="flex items-center gap-1.5 text-sm font-medium">
+                <Sparkles className="h-4 w-4 text-primary" />
+                Recommended intake
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Rough estimate from your height, weight, goals and diet. Apply
+                it, then tweak if you like.
+              </p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                <span>
+                  kcal <b>{recommended.kcal}</b>
+                </span>
+                <span>
+                  protein <b>{recommended.proteinG} g</b>
+                </span>
+                <span>
+                  fat <b>{recommended.fatG} g</b>
+                </span>
+                <span>
+                  carbs <b>{recommended.carbsG} g</b>
+                </span>
+                <span>
+                  sugar <b>{recommended.sugarG} g</b>
+                </span>
+                <span>
+                  sodium <b>{recommended.sodiumMg} mg</b>
+                </span>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={applyRecommended}
+              >
+                Apply to daily targets
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 

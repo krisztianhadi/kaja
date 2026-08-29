@@ -49,6 +49,12 @@ export async function PATCH(request: Request) {
       const key = (d.geminiApiKey ?? "").trim();
       update.geminiApiKey = key === "" ? null : key;
     }
+    if (d.heightCm !== undefined) {
+      update.heightCm = d.heightCm; // null clears it
+    }
+    if (d.weightKg !== undefined) {
+      update.weightKg = d.weightKg;
+    }
     if (d.bio !== undefined) update.bio = d.bio;
     if (d.goals !== undefined) update.goals = d.goals;
     if (d.diet !== undefined) update.diet = d.diet;

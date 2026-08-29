@@ -25,6 +25,9 @@ export const users = pgTable("users", {
   targetCarbsG: integer("target_carbs_g").notNull().default(250),
   targetSugarG: integer("target_sugar_g").notNull().default(25),
   targetSodiumMg: integer("target_sodium_mg").notNull().default(2300),
+  // body data for BMI + recommended intake (optional)
+  heightCm: integer("height_cm"),
+  weightKg: doublePrecision("weight_kg"),
   // null = use server GEMINI_TOKEN
   geminiApiKey: text("gemini_api_key"),
   createdAt: timestamp("created_at", { withTimezone: true })

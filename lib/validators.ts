@@ -11,6 +11,8 @@ export const settingsSchema = z.object({
   bio: z.string().max(2000).optional(),
   goals: z.string().max(2000).optional(),
   diet: z.string().max(2000).optional(),
+  heightCm: z.number().int().min(50).max(300).nullable().optional(),
+  weightKg: z.number().min(10).max(500).nullable().optional(),
   targetKcal: z.number().int().min(0).max(20000).optional(),
   targetProteinG: z.number().int().min(0).max(2000).optional(),
   targetFatG: z.number().int().min(0).max(2000).optional(),

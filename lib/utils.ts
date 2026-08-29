@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users, type User } from "@/lib/db/schema";
 import { getSessionUserId } from "@/lib/auth/session";
+import { bodyContextText } from "./body";
 
 export function jsonError(status: number, message: string) {
   return NextResponse.json({ error: message }, { status });
@@ -22,6 +23,8 @@ export function userDto(user: User) {
     bio: user.bio,
     goals: user.goals,
     diet: user.diet,
+    heightCm: user.heightCm,
+    weightKg: user.weightKg,
     targetKcal: user.targetKcal,
     targetProteinG: user.targetProteinG,
     targetFatG: user.targetFatG,
@@ -50,12 +53,19 @@ export async function requireUser(): Promise<User> {
 
 /** Dietary context lines fed to the AI. */
 export function userContextText(
-  user: Pick<User, "bio" | "goals" | "diet">
+  user: Pick<User, "bio" | "goals" | "diet" | "heightCm" | "weightKg">
 ): string {
   const lines: string[] = [];
   if (user.bio) lines.push(`- Dietary notes: ${user.bio}`);
   if (user.goals) lines.push(`- Goals: ${user.goals}`);
   if (user.diet) lines.push(`- Ongoing diet: ${user.diet}`);
+  const body = bodyContextText({
+    heightCm: user.heightCm,
+    weightKg: user.weightKg,
+    goals: user.goals,
+    diet: user.diet,
+  });
+  if (body) lines.push(`- Body: ${body}`);
   return lines.length > 0 ? lines.join("\n") : "- none provided";
 }
 
