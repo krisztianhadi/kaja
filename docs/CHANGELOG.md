@@ -20,4 +20,12 @@
   remember - no pressure.
 - [Feature] Progress bars color by severity: blue below 70% of target,
   green when close to 100%, red when over.
+- [Feature] Meals without a photo show a food icon matched from the
+  name/description keywords (pizza, sandwich, soup, salad, pasta, chicken,
+  fish, steak, fruits, sweets, dairy, ...) instead of a generic reload icon.
+  Clicking a meal card asks for confirmation before re-adding it.
+- [Feature] Modern, mobile-first UI: bottom tab navigation on phones,
+  pill-style navigation on desktop, larger touch targets, rounded-2xl cards
+  with soft shadows, gradient-tinted background, bottom-sheet confirmation,
+  cleaner login screen.
 

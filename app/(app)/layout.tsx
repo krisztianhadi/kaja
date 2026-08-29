@@ -22,7 +22,7 @@ export default async function AppLayout({
         <PwaRegister />
         <div className="min-h-screen">
           <Nav />
-          <main className="mx-auto w-full max-w-2xl px-4 pb-24 pt-4">
+          <main className="mx-auto w-full max-w-2xl px-4 pb-28 pt-4">
             {children}
           </main>
         </div>

@@ -138,12 +138,12 @@ export function MealForm({
                 <img
                   src={photo}
                   alt="Selected meal photo"
-                  className="h-20 w-20 rounded-md object-cover"
+                  className="h-24 w-24 rounded-xl object-cover shadow-soft"
                 />
                 <button
                   type="button"
                   onClick={() => setPhoto(null)}
-                  className="absolute -right-2 -top-2 rounded-full bg-card p-1 shadow-sm"
+                  className="absolute -right-2 -top-2 rounded-full bg-card p-1.5 shadow-lifted"
                   aria-label="Remove photo"
                 >
                   <X className="h-3.5 w-3.5" />

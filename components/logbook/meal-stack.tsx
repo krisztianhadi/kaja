@@ -73,7 +73,7 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
               type="button"
               onClick={() => setConfirmMeal(meal)}
               className={cn(
-                "block w-full rounded-lg border bg-card text-left shadow-sm transition-colors hover:bg-accent/40",
+                "block w-full rounded-2xl border bg-card text-left shadow-soft transition-colors hover:bg-accent/40",
                 flashId === meal.id && "ring-2 ring-primary"
               )}
             >
@@ -118,11 +118,11 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
 
       {confirmMeal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
           onClick={() => setConfirmMeal(null)}
         >
           <Card
-            className="w-full max-w-sm"
+            className="w-full max-w-sm rounded-t-3xl shadow-lifted sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <CardContent className="space-y-3 pt-4">

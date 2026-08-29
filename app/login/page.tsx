@@ -44,12 +44,16 @@ function LoginForm() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardContent className="pt-6">
-          <div className="mb-6 flex flex-col items-center gap-2 text-center">
-            <UtensilsCrossed className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-semibold">Kaja</h1>
-            <p className="text-sm text-muted-foreground">
-              A food logbook for the family
-            </p>
+          <div className="mb-6 flex flex-col items-center gap-3 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lifted">
+              <UtensilsCrossed className="h-7 w-7" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-semibold">Kaja</h1>
+              <p className="text-sm text-muted-foreground">
+                A food logbook for the family
+              </p>
+            </div>
           </div>
           <form onSubmit={submit} className="space-y-4">
             <div className="space-y-1.5">

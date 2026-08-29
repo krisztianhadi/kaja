@@ -38,9 +38,9 @@ export function TodayStrip() {
   ];
 
   return (
-    <div className="rounded-lg border bg-card p-4 shadow-sm">
+    <div className="rounded-2xl border bg-card p-4 shadow-soft">
       <div className="mb-1.5 flex items-baseline justify-between text-sm">
-        <span className="font-medium">Today</span>
+        <span className="font-semibold">Today</span>
         <span className="text-muted-foreground">
           {fmt(totals.kcal)} / {fmt(t.kcal)} kcal ({kcalPct}%)
         </span>

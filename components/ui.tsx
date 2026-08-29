@@ -18,10 +18,10 @@ const buttonVariants = {
 };
 
 const buttonSizes = {
-  default: "h-10 px-4 py-2",
-  sm: "h-8 px-3 text-sm",
-  lg: "h-11 px-6 text-base",
-  icon: "h-10 w-10",
+  default: "h-11 px-5 py-2",
+  sm: "h-9 px-3.5 text-sm",
+  lg: "h-12 px-6 text-base",
+  icon: "h-11 w-11",
 };
 
 export const Button = forwardRef<
@@ -34,7 +34,7 @@ export const Button = forwardRef<
   <button
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+      "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
       buttonVariants[variant],
       buttonSizes[size],
       className
@@ -51,7 +51,7 @@ export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputE
     <input
       ref={ref}
       className={cn(
-        "flex h-10 w-full rounded-md border border-input bg-card px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
+        "flex h-11 w-full rounded-xl border border-input bg-card px-3.5 py-2 text-base placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
         className
       )}
       {...props}
@@ -69,7 +69,7 @@ export const Textarea = forwardRef<
   <textarea
     ref={ref}
     className={cn(
-      "flex min-h-[80px] w-full rounded-md border border-input bg-card px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
+      "flex min-h-[84px] w-full rounded-xl border border-input bg-card px-3.5 py-2.5 text-base placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
       className
     )}
     {...props}
@@ -98,7 +98,7 @@ export function Card({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)}
+      className={cn("rounded-2xl border bg-card text-card-foreground shadow-soft", className)}
       {...props}
     />
   );
@@ -124,7 +124,7 @@ export function Progress({
 }) {
   const clamped = Math.min(100, Math.max(0, value));
   return (
-    <div className={cn("h-2 w-full overflow-hidden rounded-full bg-secondary", className)}>
+    <div className={cn("h-2.5 w-full overflow-hidden rounded-full bg-secondary", className)}>
       <div
         className={cn(
           "h-full rounded-full transition-all",
@@ -153,7 +153,7 @@ export function Segmented<T extends string>({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-0.5 rounded-md border bg-secondary p-0.5",
+        "inline-flex items-center gap-0.5 rounded-full border bg-secondary p-1",
         className
       )}
     >
@@ -163,7 +163,7 @@ export function Segmented<T extends string>({
           type="button"
           onClick={() => onChange(opt.value)}
           className={cn(
-            "rounded px-3 py-1 text-sm font-medium transition-colors",
+            "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
             value === opt.value
               ? "bg-card text-foreground shadow-sm"
               : "text-muted-foreground hover:text-foreground"
