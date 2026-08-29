@@ -7,6 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { dayKeyFor } from "@/lib/client-date";
 import { cn } from "@/lib/cn";
+import { severityClass } from "@/lib/severity";
 import type { StatsResponse } from "@/lib/types";
 import { Button, Card, CardContent, Progress, Segmented } from "@/components/ui";
 
@@ -92,7 +93,7 @@ function MacroBar({ label, value, target, unit, showPct }: {
       <Progress
         value={showPct ? p : 0}
         className="mt-1 h-1.5"
-        barClassName={cn(p > 100 && "bg-destructive")}
+        barClassName={severityClass(p)}
       />
     </div>
   );
@@ -212,10 +213,7 @@ function DailyView({
             {showPct && <span className="text-muted-foreground">{kcalPct}% of target</span>}
           </div>
           {showPct && (
-            <Progress
-              value={kcalPct}
-              barClassName={cn(kcalPct > 100 ? "bg-destructive" : kcalPct > 85 ? "bg-amber-500" : "")}
-            />
+            <Progress value={kcalPct} barClassName={severityClass(kcalPct)} />
           )}
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             <MacroBar label="protein" value={totals.proteinG} target={t.proteinG} unit="g" showPct={showPct} />

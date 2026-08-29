@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { cn } from "@/lib/cn";
+import { severityClass } from "@/lib/severity";
 import type { StatsResponse } from "@/lib/types";
 import { Progress } from "@/components/ui";
 
@@ -44,12 +45,7 @@ export function TodayStrip() {
           {fmt(totals.kcal)} / {fmt(t.kcal)} kcal ({kcalPct}%)
         </span>
       </div>
-      <Progress
-        value={kcalPct}
-        barClassName={cn(
-          kcalPct > 100 ? "bg-destructive" : kcalPct > 85 ? "bg-amber-500" : ""
-        )}
-      />
+      <Progress value={kcalPct} barClassName={severityClass(kcalPct)} />
       <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-4">
         {macros.map((m) => {
           const p = pct(m.value, m.target);
@@ -62,11 +58,7 @@ export function TodayStrip() {
                   {m.unit} ({p}%)
                 </span>
               </div>
-              <Progress
-                value={p}
-                className="mt-1 h-1.5"
-                barClassName={cn(p > 100 && "bg-destructive")}
-              />
+              <Progress value={p} className="mt-1 h-1.5" barClassName={severityClass(p)} />
             </div>
           );
         })}

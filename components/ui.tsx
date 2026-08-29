@@ -126,7 +126,11 @@ export function Progress({
   return (
     <div className={cn("h-2 w-full overflow-hidden rounded-full bg-secondary", className)}>
       <div
-        className={cn("h-full rounded-full bg-primary transition-all", barClassName)}
+        className={cn(
+          "h-full rounded-full transition-all",
+          !barClassName && "bg-primary",
+          barClassName
+        )}
         style={{ width: `${clamped}%` }}
       />
     </div>

@@ -18,4 +18,6 @@
   "this morning") record the meal on that date instead of today. The time
   phrase is stripped from the text sent to the AI. Record whenever you
   remember - no pressure.
+- [Feature] Progress bars color by severity: blue below 70% of target,
+  green when close to 100%, red when over.
 
