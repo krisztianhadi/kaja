@@ -42,6 +42,10 @@ data URI, optional), `participantIds` (JSON array of user ids, optional),
 `GEMINI_TOKEN`), stores the meal, returns
 `{ meal, totals, suggestion }` where `totals` is the user's fresh day totals.
 
+Relative time words in the description backdate the meal:
+"yesterday", "last night", "N days ago", "the day before yesterday",
+"this morning". The phrase is removed from the text sent to the AI.
+
 Errors: 400 (invalid input), 503 (no Gemini key configured), 502 (analysis
 failed).
 
@@ -66,7 +70,9 @@ Scope `family`: every meal counts once, in full.
 Returns `{ user }` (same shape as `/api/auth/me`).
 
 ### `PATCH /api/settings`
-Body: any of `bio, goals, diet, targetKcal, targetProteinG, targetFatG,
-targetCarbsG, targetSugarG, targetSodiumMg, geminiApiKey, password`.
+Body: any of `bio, goals, diet, heightCm, weightKg, targetKcal,
+targetProteinG, targetFatG, targetCarbsG, targetSugarG, targetSodiumMg,
+geminiApiKey, password`.
 `password` requires `currentPassword` in the same body. Empty
 `geminiApiKey` clears the user override (falls back to `GEMINI_TOKEN`).
+`heightCm`/`weightKg` may be null to clear.
