@@ -78,6 +78,7 @@ export async function POST(
       dayTotalsText: totalsToText(dayTotals, targets),
       ruleSuggestionText: rule.message,
       reanalysis: true,
+      location: user.region ?? undefined,
     });
     const estimate = result.estimate;
 

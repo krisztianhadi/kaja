@@ -70,6 +70,9 @@ export async function PATCH(request: Request) {
     if (d.manualKcal !== undefined) {
       update.manualKcal = d.manualKcal; // null = automatic budget
     }
+    if (d.region !== undefined) {
+      update.region = d.region === "" ? null : d.region; // "" clears it
+    }
     if (d.scientific !== undefined) {
       update.scientific = d.scientific;
     }

@@ -82,9 +82,9 @@ Scope `family`: every meal counts once, in full.
 Returns `{ user }` (same shape as `/api/auth/me`).
 
 ### `PATCH /api/settings`
-Body: any of `bio, goals, diet, heightCm, weightKg, age, gender, activity,
-goal, manualKcal, targetProteinG, targetFatG, targetCarbsG, targetSugarG,
-targetSodiumMg, geminiApiKey, password`.
+Body: any of `bio, goals, diet, region, heightCm, weightKg, age, gender,
+activity, goal, manualKcal, targetProteinG, targetFatG, targetCarbsG,
+targetSugarG, targetSodiumMg, geminiApiKey, password`.
 `password` requires `currentPassword` in the same body. Empty
 `geminiApiKey` clears the user override (falls back to `GEMINI_TOKEN`).
 `heightCm`/`weightKg`/`age`/`gender` may be null to clear. `manualKcal`

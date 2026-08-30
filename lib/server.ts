@@ -30,6 +30,7 @@ export function userDto(user: User) {
     activity: (user.activity ?? "sedentary") as ActivityLevel,
     goal: (user.goal ?? "maintain") as Goal,
     manualKcal: user.manualKcal,
+    region: user.region,
     scientific: user.scientific,
     targetProteinG: user.targetProteinG,
     targetFatG: user.targetFatG,
@@ -70,6 +71,7 @@ export function userContextText(
     | "activity"
     | "goal"
     | "manualKcal"
+    | "region"
   >,
   budgetKcal: number | null
 ): string {
@@ -77,6 +79,7 @@ export function userContextText(
   if (user.bio) lines.push(`- Dietary notes: ${user.bio}`);
   if (user.goals) lines.push(`- Goals: ${user.goals}`);
   if (user.diet) lines.push(`- Ongoing diet: ${user.diet}`);
+  if (user.region) lines.push(`- Location: ${user.region}`);
   const profile = profileContextText({
     heightCm: user.heightCm,
     weightKg: user.weightKg,
@@ -85,6 +88,7 @@ export function userContextText(
     activity: (user.activity as ActivityLevel | null) ?? "sedentary",
     goal: (user.goal as Goal | null) ?? "maintain",
     budgetKcal,
+    region: user.region,
   });
   if (profile) lines.push(`- Profile: ${profile}`);
   return lines.length > 0 ? lines.join("\n") : "- none provided";

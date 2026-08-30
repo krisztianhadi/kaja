@@ -55,6 +55,8 @@ export interface AnalyzeInput {
   ruleSuggestionText: string;
   /** true when this is a re-analysis of an existing estimate */
   reanalysis?: boolean;
+  /** user's region (e.g. "thailand") - suggest locally available dishes */
+  location?: string;
 }
 
 function buildPrompt(input: AnalyzeInput): string {
@@ -74,6 +76,9 @@ function buildPrompt(input: AnalyzeInput): string {
     `A local rule check produced this suggestion: "${input.ruleSuggestionText}"`,
     "If the rule suggestion is reasonable for this user, set suggestion.confirmsRule to true.",
     "If a different or additional counter action would be more useful (considering the user's context), set confirmsRule to false and/or fill suggestion.extra with ONE short actionable suggestion.",
+    input.location
+      ? `The user is in ${input.location}. When suggesting a counter-action meal, recommend a specific dish that is commonly available and familiar there (e.g. local street food or home cooking), not generic advice like "more lean protein".`
+      : "",
     "",
     `Food to estimate: ${desc}`,
     "",

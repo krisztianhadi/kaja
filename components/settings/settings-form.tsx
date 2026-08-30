@@ -9,6 +9,7 @@ import { useUser } from "@/components/user-context";
 import { useTheme, type ThemeMode } from "@/components/theme";
 import { useToast } from "@/components/toast";
 import { bmiCategory, computeBmi } from "@/lib/body";
+import { REGIONS } from "@/lib/regions";
 import {
   ACTIVITY_LABELS,
   ACTIVITY_MULTIPLIERS,
@@ -91,6 +92,7 @@ export function SettingsForm() {
     user?.manualKcal != null ? String(user.manualKcal) : ""
   );
   const [scientific, setScientific] = useState(user?.scientific ?? false);
+  const [region, setRegion] = useState(user?.region ?? "");
   const [targets, setTargets] = useState({
     targetProteinG: user?.targetProteinG ?? 50,
     targetFatG: user?.targetFatG ?? 70,
@@ -156,6 +158,7 @@ export function SettingsForm() {
         manualMode === "manual" && manualKcal.trim() !== ""
           ? Math.round(Number(manualKcal))
           : null,
+      region: region === "" ? null : region,
       scientific,
       ...targets,
     };
@@ -256,6 +259,24 @@ export function SettingsForm() {
                 placeholder="e.g. low sodium diet, low sugar diet"
                 rows={2}
               />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="region">Region</Label>
+              <select
+                id="region"
+                className={selectClass}
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+              >
+                {REGIONS.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-muted-foreground">
+                Suggestions will name dishes that are easy to find here.
+              </p>
             </div>
           </CardContent>
         </Card>

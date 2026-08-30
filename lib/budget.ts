@@ -115,6 +115,7 @@ export function profileContextText(input: {
   activity: ActivityLevel;
   goal: Goal;
   budgetKcal: number | null;
+  region?: string | null;
 }): string {
   const parts: string[] = [];
   if (input.heightCm && input.weightKg) {
@@ -126,6 +127,7 @@ export function profileContextText(input: {
   if (input.age) parts.push(`${input.age} years`);
   parts.push(`activity: ${ACTIVITY_LABELS[input.activity].toLowerCase()}`);
   parts.push(`goal: ${GOAL_LABELS[input.goal].toLowerCase()}`);
+  if (input.region) parts.push(`region: ${input.region}`);
   if (input.budgetKcal) parts.push(`daily calorie budget ~${input.budgetKcal} kcal`);
   return parts.join(", ");
 }

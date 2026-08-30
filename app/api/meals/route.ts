@@ -140,6 +140,7 @@ export async function POST(request: Request) {
       userContext: userContextText(user, budget.kcal),
       dayTotalsText: totalsToText(totalsBefore, targets),
       ruleSuggestionText: rule.message,
+      location: user.region ?? undefined,
     });
     const estimate = result.estimate;
 

@@ -15,6 +15,7 @@ export interface UserDto {
   activity: "sedentary" | "light" | "moderate" | "active" | "extra";
   goal: "maintain" | "lose" | "gain";
   manualKcal: number | null;
+  region: string | null;
   scientific: boolean;
   targetProteinG: number;
   targetFatG: number;

@@ -20,6 +20,7 @@ export const settingsSchema = z.object({
     .optional(),
   goal: z.enum(["maintain", "lose", "gain"]).optional(),
   manualKcal: z.number().int().min(500).max(10000).nullable().optional(),
+  region: z.string().max(40).nullable().optional(),
   scientific: z.boolean().optional(),
   targetProteinG: z.number().int().min(0).max(2000).optional(),
   targetFatG: z.number().int().min(0).max(2000).optional(),

@@ -8,6 +8,11 @@
   "not counted"). `dayKeyFor` now computes `ts - offset` correctly.
 - [Feature] Meal history is grouped with day separators ("Today",
   "Yesterday", weekday) so it is obvious which day each meal belongs to.
+- [Feature] Region setting in Settings (Profile): the AI counter-action
+  suggestions now name dishes that are commonly available in the user's
+  region (e.g. Gai Yang in Thailand) instead of generic advice like
+  "more lean protein". Fed into the meal analysis prompt and the
+  re-analysis prompt.
 - [Change] Migrated the UI to the shadcn/ui component system (same stack as
   Ghosted): `components/ui/*` with cva variants, Radix primitives (Dialog,
   Label, Progress, Slot), `clsx` + `tailwind-merge` (`cn` in lib/utils.ts)

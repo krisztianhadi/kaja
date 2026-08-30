@@ -36,6 +36,13 @@
       "when": 1788063569898,
       "tag": "0004_strong_smiling_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1788076611538,
+      "tag": "0005_amazing_satana",
+      "breakpoints": true
     }
   ]
 }

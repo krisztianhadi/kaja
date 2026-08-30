@@ -38,6 +38,8 @@ export const users = pgTable("users", {
   gender: text("gender"), // male | female
   activity: text("activity").notNull().default("sedentary"), // sedentary|light|moderate|active|extra
   goal: text("goal").notNull().default("maintain"), // maintain|lose|gain
+  // where the user lives - the AI suggests locally available dishes
+  region: text("region"),
   // exact numbers (g/kcal/mg) on the main screen; false = percentages only
   scientific: boolean("scientific").notNull().default(false),
   // null = use server GEMINI_TOKEN
