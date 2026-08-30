@@ -51,7 +51,7 @@ export function ReanalyzeButton({
         size="sm"
         onClick={run}
         disabled={busy}
-        className={className}
+        className={cn("w-full", className)}
       >
         <RefreshCw className={cn("h-3.5 w-3.5", busy && "animate-spin")} />
         {busy ? "Analyzing..." : "Analyze again"}

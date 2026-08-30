@@ -77,4 +77,10 @@
   cola, chocolate cake, ...), health foods (smoothies, protein shakes,
   salads) are judged by numbers only, and the numeric junk signature
   requires high sugar AND high sodium.
+- [Fix] Mobile button patterns: action buttons are full-width or 50-50
+  pairs (Shared + Record, Close + Log again, Cancel + Change password),
+  "How is your day" is a connected full-width button group, dashboard
+  filters are full-width segmented groups, settings save is full width.
+- [Fix] Meal cards: the percentage now sits above a small "of day" caption
+  instead of one inline line.
 

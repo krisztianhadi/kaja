@@ -127,8 +127,11 @@ export function MealStack({
                       </div>
                     </>
                   ) : (
-                    <div className="text-sm font-semibold">
-                      {dayPct}% of day
+                    <div className="text-right">
+                      <div className="text-sm font-semibold">{dayPct}%</div>
+                      <div className="text-[10px] leading-tight text-muted-foreground">
+                        of day
+                      </div>
                     </div>
                   )}
                 </div>
@@ -187,7 +190,7 @@ export function MealStack({
                   onDone={(m) => setSelected(m)}
                 />
               )}
-              <div className="flex justify-end gap-2 pt-1">
+              <div className="grid grid-cols-2 gap-2 pt-1">
                 <Button
                   variant="outline"
                   onClick={() => setSelected(null)}

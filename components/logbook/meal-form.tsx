@@ -151,11 +151,12 @@ export function MealForm({
               </div>
             )}
 
-            <div className="mt-3 flex items-center justify-between gap-2">
-              <button
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <Button
                 type="button"
+                variant="outline"
                 onClick={() => setShowShared((s) => !s)}
-                className="flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                className="w-full"
               >
                 <Users className="h-4 w-4" />
                 Shared
@@ -164,8 +165,8 @@ export function MealForm({
                     {participants.length}
                   </span>
                 )}
-              </button>
-              <Button type="submit" disabled={!canSubmit}>
+              </Button>
+              <Button type="submit" disabled={!canSubmit} className="w-full">
                 {busy ? (
                   "Estimating..."
                 ) : (

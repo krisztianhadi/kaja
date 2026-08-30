@@ -501,7 +501,7 @@ export function SettingsForm() {
           </CardContent>
         </Card>
 
-        <Button type="submit" disabled={busy}>
+        <Button type="submit" disabled={busy} className="w-full">
           {busy ? "Saving..." : "Save settings"}
         </Button>
         <Button
@@ -563,7 +563,7 @@ export function SettingsForm() {
                   {pError}
                 </p>
               )}
-              <div className="flex justify-end gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="outline"
                   onClick={() => setPasswordOpen(false)}

@@ -129,8 +129,9 @@ export function Dashboard() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="space-y-2">
         <Segmented<Range>
+          fullWidth
           value={range}
           onChange={setRange}
           options={[
@@ -140,6 +141,7 @@ export function Dashboard() {
           ]}
         />
         <Segmented<Scope>
+          fullWidth
           value={scope}
           onChange={setScope}
           options={[
