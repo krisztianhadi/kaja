@@ -62,10 +62,12 @@ Re-records a previous meal from stored data - no AI call. Returns
 ## Stats
 
 ### `GET /api/stats?range=daily|weekly|monthly&scope=me|family&date=YYYY-MM-DD&tzOffsetMinutes=`
-Returns `{ range, scope, date, targets, days, summary }`. `days` is one
-(daily), 7 (weekly) or 30 (monthly) day entries, each with `date, totals,
-meals`. `summary` holds `totalKcal, avgKcal, mealCount, totalProteinG,
-totalFatG, totalCarbsG, totalSugarG, totalSodiumMg`.
+Returns `{ range, scope, date, targets, budget, days, summary }`.
+`targets.kcal` is the effective budget for the anchor day (BMR/TDEE or
+manual override). `budget = { kcal, overrideMode, manual, complete }`.
+`days` is one (daily), 7 (weekly) or 30 (monthly) day entries, each with
+`date, totals, meals`. `summary` holds `totalKcal, avgKcal, mealCount,
+totalProteinG, totalFatG, totalCarbsG, totalSugarG, totalSodiumMg`.
 
 Scope `me`: shared meals count as `1 / participantCount` for the viewer.
 Scope `family`: every meal counts once, in full.
@@ -76,9 +78,15 @@ Scope `family`: every meal counts once, in full.
 Returns `{ user }` (same shape as `/api/auth/me`).
 
 ### `PATCH /api/settings`
-Body: any of `bio, goals, diet, heightCm, weightKg, targetKcal,
-targetProteinG, targetFatG, targetCarbsG, targetSugarG, targetSodiumMg,
-geminiApiKey, password`.
+Body: any of `bio, goals, diet, heightCm, weightKg, age, gender, activity,
+goal, manualKcal, targetProteinG, targetFatG, targetCarbsG, targetSugarG,
+targetSodiumMg, geminiApiKey, password`.
 `password` requires `currentPassword` in the same body. Empty
 `geminiApiKey` clears the user override (falls back to `GEMINI_TOKEN`).
-`heightCm`/`weightKg` may be null to clear.
+`heightCm`/`weightKg`/`age`/`gender` may be null to clear. `manualKcal`
+(null = automatic BMR/TDEE budget, any value = manual override).
+
+### `POST /api/override?tzOffsetMinutes=`
+Body: `{ "mode": "usual" | "more" | "less" }`. Sets today's activity
+override (more/less active adjusts the budget by +/-250 kcal). Returns
+`{ mode, budget }`.

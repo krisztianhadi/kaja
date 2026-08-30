@@ -6,6 +6,7 @@ import {
   jsonb,
   doublePrecision,
   integer,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -19,15 +20,23 @@ export const users = pgTable("users", {
   // ongoing diet, e.g. "low sodium diet"
   diet: text("diet").notNull().default(""),
   // daily targets; user-overridable in Settings
-  targetKcal: integer("target_kcal").notNull().default(2000),
+  // protein/fat/carbs/sugar/sodium stay manual; kcal comes from the BMR/TDEE
+  // model unless manually overridden
+  // manual calorie override; null = automatic BMR/TDEE budget.
+  // physical column name kept as target_kcal (avoided a rename conflict)
+  manualKcal: integer("target_kcal"),
   targetProteinG: integer("target_protein_g").notNull().default(50),
   targetFatG: integer("target_fat_g").notNull().default(70),
   targetCarbsG: integer("target_carbs_g").notNull().default(250),
   targetSugarG: integer("target_sugar_g").notNull().default(25),
   targetSodiumMg: integer("target_sodium_mg").notNull().default(2300),
-  // body data for BMI + recommended intake (optional)
+  // body data for BMR/TDEE (optional until filled in)
   heightCm: integer("height_cm"),
   weightKg: doublePrecision("weight_kg"),
+  age: integer("age"),
+  gender: text("gender"), // male | female
+  activity: text("activity").notNull().default("sedentary"), // sedentary|light|moderate|active|extra
+  goal: text("goal").notNull().default("maintain"), // maintain|lose|gain
   // null = use server GEMINI_TOKEN
   geminiApiKey: text("gemini_api_key"),
   createdAt: timestamp("created_at", { withTimezone: true })
@@ -70,6 +79,26 @@ export const meals = pgTable("meals", {
 
 export type Meal = typeof meals.$inferSelect;
 export type NewMeal = typeof meals.$inferInsert;
+
+/** Per-day activity override ("more/less active than usual"). */
+export const dayOverrides = pgTable(
+  "day_overrides",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    dayKey: text("day_key").notNull(), // YYYY-MM-DD in the client's tz
+    mode: text("mode").notNull(), // usual|more|less
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    primaryKey({ name: "day_overrides_pk", columns: [t.userId, t.dayKey] }),
+  ]
+);
+
+export type DayOverride = typeof dayOverrides.$inferSelect;
 
 export interface Suggestion {
   level: "ok" | "watch" | "high";

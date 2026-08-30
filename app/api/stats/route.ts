@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { requireUser, jsonError } from "@/lib/utils";
 import { computeStats, dayKeyFor, type Range, type Scope } from "@/lib/stats";
-import { targetsFromUser } from "@/lib/nutrition";
+import { targetsFromUser, type Targets } from "@/lib/nutrition";
+import { targetsWithBudget, type OverrideMode } from "@/lib/budget";
 import { fetchVisibleMeals } from "@/lib/meal-service";
+import { budgetForDay, getOverrideMode } from "@/lib/override";
 
 const MS_DAY = 86_400_000;
 
@@ -35,6 +37,15 @@ export async function GET(request: Request) {
         ? await fetchVisibleMeals(user.id, since)
         : await fetchVisibleMeals(user.id, since, 500); // family: everything counts
 
+    // effective calorie target = BMR/TDEE budget for the anchor day
+    const budget = await budgetForDay(user, date);
+    const targets: Targets = targetsWithBudget(
+      targetsFromUser(user),
+      budget.kcal
+    );
+    const overrideMode = ((await getOverrideMode(user.id, date)) ??
+      "usual") as OverrideMode;
+
     const stats = computeStats(
       visible,
       scope === "me" ? user.id : null,
@@ -42,10 +53,18 @@ export async function GET(request: Request) {
       range,
       date,
       tzOffsetMin,
-      targetsFromUser(user)
+      targets
     );
 
-    return NextResponse.json(stats);
+    return NextResponse.json({
+      ...stats,
+      budget: {
+        kcal: budget.kcal,
+        overrideMode,
+        manual: !budget.auto,
+        complete: budget.complete,
+      },
+    });
   } catch (err) {
     if (err instanceof NextResponse) return err;
     throw err;

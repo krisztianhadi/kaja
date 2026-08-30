@@ -10,7 +10,11 @@ export interface UserDto {
   diet: string;
   heightCm: number | null;
   weightKg: number | null;
-  targetKcal: number;
+  age: number | null;
+  gender: "male" | "female" | null;
+  activity: "sedentary" | "light" | "moderate" | "active" | "extra";
+  goal: "maintain" | "lose" | "gain";
+  manualKcal: number | null;
   targetProteinG: number;
   targetFatG: number;
   targetCarbsG: number;

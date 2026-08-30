@@ -64,7 +64,7 @@ export function computeStats(
   anchorKey: string,
   tzOffsetMin: number,
   targets: Targets
-): StatsResponse {
+): Omit<StatsResponse, "budget"> {
   const keys = rangeKeys(anchorKey, range);
   const keySet = new Set(keys);
   const byDay = new Map<string, Meal[]>();

@@ -13,7 +13,13 @@ export const settingsSchema = z.object({
   diet: z.string().max(2000).optional(),
   heightCm: z.number().int().min(50).max(300).nullable().optional(),
   weightKg: z.number().min(10).max(500).nullable().optional(),
-  targetKcal: z.number().int().min(0).max(20000).optional(),
+  age: z.number().int().min(10).max(120).nullable().optional(),
+  gender: z.enum(["male", "female"]).nullable().optional(),
+  activity: z
+    .enum(["sedentary", "light", "moderate", "active", "extra"])
+    .optional(),
+  goal: z.enum(["maintain", "lose", "gain"]).optional(),
+  manualKcal: z.number().int().min(500).max(10000).nullable().optional(),
   targetProteinG: z.number().int().min(0).max(2000).optional(),
   targetFatG: z.number().int().min(0).max(2000).optional(),
   targetCarbsG: z.number().int().min(0).max(2000).optional(),

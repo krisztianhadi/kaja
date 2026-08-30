@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users, type User } from "@/lib/db/schema";
 import { getSessionUserId } from "@/lib/auth/session";
-import { bodyContextText } from "./body";
+import { profileContextText, type Gender, type ActivityLevel, type Goal } from "./budget";
 
 export function jsonError(status: number, message: string) {
   return NextResponse.json({ error: message }, { status });
@@ -25,7 +25,11 @@ export function userDto(user: User) {
     diet: user.diet,
     heightCm: user.heightCm,
     weightKg: user.weightKg,
-    targetKcal: user.targetKcal,
+    age: user.age,
+    gender: user.gender as Gender | null,
+    activity: (user.activity ?? "sedentary") as ActivityLevel,
+    goal: (user.goal ?? "maintain") as Goal,
+    manualKcal: user.manualKcal,
     targetProteinG: user.targetProteinG,
     targetFatG: user.targetFatG,
     targetCarbsG: user.targetCarbsG,
@@ -53,19 +57,35 @@ export async function requireUser(): Promise<User> {
 
 /** Dietary context lines fed to the AI. */
 export function userContextText(
-  user: Pick<User, "bio" | "goals" | "diet" | "heightCm" | "weightKg">
+  user: Pick<
+    User,
+    | "bio"
+    | "goals"
+    | "diet"
+    | "heightCm"
+    | "weightKg"
+    | "age"
+    | "gender"
+    | "activity"
+    | "goal"
+    | "manualKcal"
+  >,
+  budgetKcal: number | null
 ): string {
   const lines: string[] = [];
   if (user.bio) lines.push(`- Dietary notes: ${user.bio}`);
   if (user.goals) lines.push(`- Goals: ${user.goals}`);
   if (user.diet) lines.push(`- Ongoing diet: ${user.diet}`);
-  const body = bodyContextText({
+  const profile = profileContextText({
     heightCm: user.heightCm,
     weightKg: user.weightKg,
-    goals: user.goals,
-    diet: user.diet,
+    age: user.age,
+    gender: (user.gender as Gender | null) ?? null,
+    activity: (user.activity as ActivityLevel | null) ?? "sedentary",
+    goal: (user.goal as Goal | null) ?? "maintain",
+    budgetKcal,
   });
-  if (body) lines.push(`- Body: ${body}`);
+  if (profile) lines.push(`- Profile: ${profile}`);
   return lines.length > 0 ? lines.join("\n") : "- none provided";
 }
 

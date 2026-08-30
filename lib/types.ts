@@ -29,6 +29,12 @@ export interface StatsResponse {
   scope: "me" | "family";
   date: string; // YYYY-MM-DD anchor
   targets: Targets;
+  budget: {
+    kcal: number;
+    overrideMode: "usual" | "more" | "less";
+    manual: boolean;
+    complete: boolean;
+  };
   days: DayEntry[];
   summary: {
     totalKcal: number;

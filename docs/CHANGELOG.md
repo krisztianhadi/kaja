@@ -46,4 +46,12 @@
   back to OpenRouter (`openai/gpt-4o-mini` by default) so recording keeps
   working. The model that actually produced the estimate is recorded on the
   meal.
+- [Feature] BMR / TDEE calorie budget: Settings now collects age, gender,
+  activity baseline (sedentary to extra) and goal (maintain/lose/gain).
+  The daily calorie budget is auto-calculated with Mifflin-St Jeor BMR x
+  activity multiplier + goal adjustment (-400/+400). A per-day activity
+  override on the main screen adjusts it by +/-250 kcal (Usual / +250 /
+  -250). A manual calorie goal in Settings disables auto-calculation until
+  toggled back. The main screen shows "Today's budget" with an override
+  note. The budget feeds the intake percentages and the AI context.
 

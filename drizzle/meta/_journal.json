@@ -22,6 +22,13 @@
       "when": 1788061755291,
       "tag": "0002_overrated_mantis",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1788062634799,
+      "tag": "0003_damp_firelord",
+      "breakpoints": true
     }
   ]
 }

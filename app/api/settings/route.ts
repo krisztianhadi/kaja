@@ -55,10 +55,24 @@ export async function PATCH(request: Request) {
     if (d.weightKg !== undefined) {
       update.weightKg = d.weightKg;
     }
+    if (d.age !== undefined) {
+      update.age = d.age; // null clears it
+    }
+    if (d.gender !== undefined) {
+      update.gender = d.gender; // null clears it
+    }
+    if (d.activity !== undefined) {
+      update.activity = d.activity;
+    }
+    if (d.goal !== undefined) {
+      update.goal = d.goal;
+    }
+    if (d.manualKcal !== undefined) {
+      update.manualKcal = d.manualKcal; // null = automatic budget
+    }
     if (d.bio !== undefined) update.bio = d.bio;
     if (d.goals !== undefined) update.goals = d.goals;
     if (d.diet !== undefined) update.diet = d.diet;
-    if (d.targetKcal !== undefined) update.targetKcal = d.targetKcal;
     if (d.targetProteinG !== undefined) update.targetProteinG = d.targetProteinG;
     if (d.targetFatG !== undefined) update.targetFatG = d.targetFatG;
     if (d.targetCarbsG !== undefined) update.targetCarbsG = d.targetCarbsG;

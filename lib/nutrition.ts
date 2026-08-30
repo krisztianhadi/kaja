@@ -18,9 +18,13 @@ export const DEFAULT_TARGETS: Targets = {
   sodiumMg: 2300,
 };
 
-export function targetsFromUser(user: Pick<User, "targetKcal" | "targetProteinG" | "targetFatG" | "targetCarbsG" | "targetSugarG" | "targetSodiumMg">): Targets {
+export function targetsFromUser(
+  user: Pick<User, "manualKcal" | "targetProteinG" | "targetFatG" | "targetCarbsG" | "targetSugarG" | "targetSodiumMg">
+): Targets {
   return {
-    kcal: user.targetKcal || DEFAULT_TARGETS.kcal,
+    // kcal placeholder: the effective value comes from the BMR/TDEE budget
+    // via targetsWithBudget() - see lib/budget.ts
+    kcal: user.manualKcal || DEFAULT_TARGETS.kcal,
     proteinG: user.targetProteinG || DEFAULT_TARGETS.proteinG,
     fatG: user.targetFatG || DEFAULT_TARGETS.fatG,
     carbsG: user.targetCarbsG || DEFAULT_TARGETS.carbsG,

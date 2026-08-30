@@ -2,11 +2,21 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogOut, Sparkles } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { api } from "@/lib/api";
 import { useUser } from "@/components/user-context";
 import { useTheme, type ThemeMode } from "@/components/theme";
-import { bmiCategory, computeBmi, recommendedTargets } from "@/lib/body";
+import { bmiCategory, computeBmi } from "@/lib/body";
+import {
+  ACTIVITY_LABELS,
+  ACTIVITY_MULTIPLIERS,
+  computeBmr,
+  computeBudget,
+  GOAL_LABELS,
+  type ActivityLevel,
+  type Gender,
+  type Goal,
+} from "@/lib/budget";
 import { Button, Card, CardContent, Input, Label, Segmented, Textarea } from "@/components/ui";
 
 function NumberField({
@@ -36,6 +46,9 @@ function NumberField({
   );
 }
 
+const selectClass =
+  "flex h-11 w-full rounded-xl border border-input bg-card px-3.5 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+
 export function SettingsForm() {
   const user = useUser();
   const router = useRouter();
@@ -53,8 +66,19 @@ export function SettingsForm() {
   const [weightKg, setWeightKg] = useState(
     user?.weightKg != null ? String(user.weightKg) : ""
   );
+  const [age, setAge] = useState(user?.age != null ? String(user.age) : "");
+  const [gender, setGender] = useState<Gender | "">(user?.gender ?? "");
+  const [activity, setActivity] = useState<ActivityLevel>(
+    user?.activity ?? "sedentary"
+  );
+  const [goal, setGoal] = useState<Goal>(user?.goal ?? "maintain");
+  const [manualMode, setManualMode] = useState<"auto" | "manual">(
+    user?.manualKcal != null ? "manual" : "auto"
+  );
+  const [manualKcal, setManualKcal] = useState(
+    user?.manualKcal != null ? String(user.manualKcal) : ""
+  );
   const [targets, setTargets] = useState({
-    targetKcal: user?.targetKcal ?? 2000,
     targetProteinG: user?.targetProteinG ?? 50,
     targetFatG: user?.targetFatG ?? 70,
     targetCarbsG: user?.targetCarbsG ?? 250,
@@ -69,33 +93,30 @@ export function SettingsForm() {
 
   const h = heightCm.trim() === "" ? null : Number(heightCm);
   const w = weightKg.trim() === "" ? null : Number(weightKg);
+  const a = age.trim() === "" ? null : Number(age);
   const bmi = computeBmi(h, w);
-  const recommended = useMemo(
+  const bmr = computeBmr(w, h, a, gender === "" ? null : gender);
+  const tdee = bmr !== null ? bmr * ACTIVITY_MULTIPLIERS[activity] : null;
+  const budget = useMemo(
     () =>
-      recommendedTargets({
-        heightCm: h,
+      computeBudget({
         weightKg: w,
-        goals,
-        diet,
+        heightCm: h,
+        age: a,
+        gender: gender === "" ? null : gender,
+        activity,
+        goal,
+        manualKcal:
+          manualMode === "manual" && manualKcal.trim() !== ""
+            ? Number(manualKcal)
+            : null,
+        overrideMode: "usual",
       }),
-    [h, w, goals, diet]
+    [w, h, a, gender, activity, goal, manualMode, manualKcal]
   );
 
   function setTarget(key: keyof typeof targets) {
     return (v: number) => setTargets((prev) => ({ ...prev, [key]: v }));
-  }
-
-  function applyRecommended() {
-    if (!recommended) return;
-    setTargets({
-      targetKcal: recommended.kcal,
-      targetProteinG: recommended.proteinG,
-      targetFatG: recommended.fatG,
-      targetCarbsG: recommended.carbsG,
-      targetSugarG: recommended.sugarG,
-      targetSodiumMg: recommended.sodiumMg,
-    });
-    setSaved(false);
   }
 
   async function save(e: React.FormEvent) {
@@ -110,6 +131,14 @@ export function SettingsForm() {
       diet,
       heightCm: heightCm.trim() === "" ? null : Math.round(Number(heightCm)),
       weightKg: weightKg.trim() === "" ? null : Number(weightKg),
+      age: age.trim() === "" ? null : Math.round(Number(age)),
+      gender: gender === "" ? null : gender,
+      activity,
+      goal,
+      manualKcal:
+        manualMode === "manual" && manualKcal.trim() !== ""
+          ? Math.round(Number(manualKcal))
+          : null,
       ...targets,
     };
 
@@ -200,7 +229,7 @@ export function SettingsForm() {
 
       <Card>
         <CardContent className="space-y-3 pt-4">
-          <h2 className="text-sm font-semibold">Body</h2>
+          <h2 className="text-sm font-semibold">Body and calorie budget</h2>
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label htmlFor="heightCm">Height (cm)</Label>
@@ -227,57 +256,131 @@ export function SettingsForm() {
                 placeholder="e.g. 72.5"
               />
             </div>
+            <div className="space-y-1">
+              <Label htmlFor="age">Age</Label>
+              <Input
+                id="age"
+                type="number"
+                min={10}
+                max={120}
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="e.g. 34"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="gender">Gender</Label>
+              <select
+                id="gender"
+                className={selectClass}
+                value={gender}
+                onChange={(e) => setGender(e.target.value as Gender | "")}
+              >
+                <option value="">-</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="activity">Activity baseline</Label>
+              <select
+                id="activity"
+                className={selectClass}
+                value={activity}
+                onChange={(e) => setActivity(e.target.value as ActivityLevel)}
+              >
+                {(Object.keys(ACTIVITY_LABELS) as ActivityLevel[]).map((k) => (
+                  <option key={k} value={k}>
+                    {ACTIVITY_LABELS[k]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="goal">Goal</Label>
+              <select
+                id="goal"
+                className={selectClass}
+                value={goal}
+                onChange={(e) => setGoal(e.target.value as Goal)}
+              >
+                {(Object.keys(GOAL_LABELS) as Goal[]).map((k) => (
+                  <option key={k} value={k}>
+                    {GOAL_LABELS[k]}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          {bmi !== null && (
+          {(bmi !== null || bmr !== null) && (
             <p className="text-sm">
-              BMI: <span className="font-medium">{bmi.toFixed(1)}</span>{" "}
-              <span className="text-muted-foreground">
-                ({bmiCategory(bmi)})
-              </span>
+              {bmi !== null && (
+                <span>
+                  BMI: <span className="font-medium">{bmi.toFixed(1)}</span>{" "}
+                  <span className="text-muted-foreground">
+                    ({bmiCategory(bmi)})
+                  </span>
+                </span>
+              )}
+              {bmi !== null && bmr !== null && " - "}
+              {bmr !== null && (
+                <span>
+                  BMR: <span className="font-medium">{Math.round(bmr)}</span>
+                  {tdee !== null && (
+                    <>
+                      {" "}
+                      kcal - TDEE:{" "}
+                      <span className="font-medium">{Math.round(tdee)}</span>{" "}
+                      kcal
+                    </>
+                  )}
+                </span>
+              )}
             </p>
           )}
 
-          {recommended && (
-            <div className="space-y-2 rounded-md bg-secondary/50 p-3">
-              <div className="flex items-center gap-1.5 text-sm font-medium">
-                <Sparkles className="h-4 w-4 text-primary" />
-                Recommended intake
+          <div className="space-y-2 rounded-xl bg-secondary/50 p-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-medium">Calorie goal</div>
+                <div className="text-xs text-muted-foreground">
+                  {budget.auto
+                    ? budget.complete
+                      ? "Auto-calculated from your BMR, activity and goal"
+                      : "Add age and gender for an accurate budget (using 2000 kcal meanwhile)"
+                    : "Set manually - auto-calculation is off"}
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Rough estimate from your height, weight, goals and diet. Apply
-                it, then tweak if you like.
-              </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
-                <span>
-                  kcal <b>{recommended.kcal}</b>
-                </span>
-                <span>
-                  protein <b>{recommended.proteinG} g</b>
-                </span>
-                <span>
-                  fat <b>{recommended.fatG} g</b>
-                </span>
-                <span>
-                  carbs <b>{recommended.carbsG} g</b>
-                </span>
-                <span>
-                  sugar <b>{recommended.sugarG} g</b>
-                </span>
-                <span>
-                  sodium <b>{recommended.sodiumMg} mg</b>
-                </span>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={applyRecommended}
-              >
-                Apply to daily targets
-              </Button>
+              <Segmented<"auto" | "manual">
+                value={manualMode}
+                onChange={setManualMode}
+                options={[
+                  { value: "auto", label: "Auto" },
+                  { value: "manual", label: "Manual" },
+                ]}
+              />
             </div>
-          )}
+            {manualMode === "manual" ? (
+              <div className="space-y-1">
+                <Label htmlFor="manualKcal">Daily calorie goal (kcal)</Label>
+                <Input
+                  id="manualKcal"
+                  type="number"
+                  min={500}
+                  max={10000}
+                  value={manualKcal}
+                  onChange={(e) => setManualKcal(e.target.value)}
+                  placeholder="e.g. 1800"
+                />
+              </div>
+            ) : (
+              <p className="text-sm">
+                Daily budget:{" "}
+                <span className="font-semibold">{budget.kcal} kcal</span>
+              </p>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -285,11 +388,10 @@ export function SettingsForm() {
         <CardContent className="space-y-3 pt-4">
           <h2 className="text-sm font-semibold">Daily targets</h2>
           <p className="text-xs text-muted-foreground">
-            Used for the daily intake percentages and the counter-action
-            suggestions.
+            Calories come from the budget above. The rest are used for the
+            daily intake percentages and counter-action suggestions.
           </p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <NumberField label="Calories" unit="kcal" value={targets.targetKcal} onChange={setTarget("targetKcal")} />
             <NumberField label="Protein" unit="g" value={targets.targetProteinG} onChange={setTarget("targetProteinG")} />
             <NumberField label="Fat" unit="g" value={targets.targetFatG} onChange={setTarget("targetFatG")} />
             <NumberField label="Carbs" unit="g" value={targets.targetCarbsG} onChange={setTarget("targetCarbsG")} />

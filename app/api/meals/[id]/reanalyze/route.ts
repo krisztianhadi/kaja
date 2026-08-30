@@ -8,11 +8,13 @@ import {
   DEFAULT_BETTER_GEMINI_MODEL,
 } from "@/lib/gemini";
 import { targetsFromUser, totalsToText, totalsForMeals } from "@/lib/nutrition";
+import { targetsWithBudget } from "@/lib/budget";
 import { ruleSuggestion } from "@/lib/suggestions";
 import { fetchVisibleMeals } from "@/lib/meal-service";
 import { mealToDto, dayKeyFor } from "@/lib/stats";
 import { mealScaleForUser } from "@/lib/nutrition";
 import { parseBackdate } from "@/lib/backdate";
+import { budgetForDay } from "@/lib/override";
 
 const MS_DAY = 86_400_000;
 
@@ -59,7 +61,8 @@ export async function POST(
     const dayMeals = visible.filter(
       (m) => dayKeyFor(m.createdAt.getTime(), tzOffsetMin) === dayKey
     );
-    const targets = targetsFromUser(user);
+    const budget = await budgetForDay(user, dayKey);
+    const targets = targetsWithBudget(targetsFromUser(user), budget.kcal);
     const dayTotals = totalsForMeals(dayMeals, user.id);
     const rule = ruleSuggestion(dayTotals, targets);
 
@@ -71,7 +74,7 @@ export async function POST(
       imageDataUri: meal.imageData || null,
       apiKey,
       model: betterModel,
-      userContext: userContextText(user),
+      userContext: userContextText(user, budget.kcal),
       dayTotalsText: totalsToText(dayTotals, targets),
       ruleSuggestionText: rule.message,
       reanalysis: true,
