@@ -10,8 +10,16 @@ handlers under `app/api/` are the API.
 - Postgres 16 with Drizzle ORM (`lib/db/schema.ts`, migrations in `drizzle/`)
 - Custom session auth: signed JWT cookie (`lib/auth/token.ts`, `jose`),
   bcrypt password hashing (`lib/auth/password.ts`)
-- Gemini REST API for nutrition estimates (`lib/gemini.ts`) - free tier, BYOK
-- TanStack Query for client data fetching, date-fns for dates
+- Gemini REST API for nutrition estimates (`lib/gemini.ts`) - free tier, BYOK,
+  with an automatic OpenRouter fallback
+- **shadcn/ui** component system: `components/ui/*` (Button with cva, Card,
+  Input, Textarea, Label and Progress on Radix primitives, Dialog on Radix),
+  `clsx` + `tailwind-merge` via `lib/utils.ts` (`cn`), `tailwindcss-animate`
+  with dialog/sheet keyframes. Client-safe `lib/utils.ts` holds only `cn`;
+  server-only helpers (session, DB) live in `lib/server.ts` so client
+  components never pull in `next/headers`.
+- TanStack Query for client data fetching, date-fns for dates, lucide-react
+  for icons
 
 ## Data model
 

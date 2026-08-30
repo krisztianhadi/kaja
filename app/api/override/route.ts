@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { requireUser, jsonError } from "@/lib/utils";
+import { requireUser, jsonError } from "@/lib/server";
 import { dayKeyFor } from "@/lib/stats";
 import { setOverride, budgetForDay } from "@/lib/override";
 

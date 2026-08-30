@@ -5,7 +5,7 @@ import { api, tzOffsetMinutes } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { severityClass } from "@/lib/severity";
 import type { StatsResponse } from "@/lib/types";
-import { Progress } from "@/components/ui";
+import { Progress } from "@/components/ui/progress";
 import { useUser } from "@/components/user-context";
 
 function fmt(n: number): string {

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { requireUser } from "@/lib/utils";
+import { requireUser } from "@/lib/server";
 
 export async function GET() {
   try {

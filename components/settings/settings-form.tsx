@@ -19,7 +19,18 @@ import {
   type Gender,
   type Goal,
 } from "@/lib/budget";
-import { Button, Card, CardContent, Input, Label, Segmented, Textarea } from "@/components/ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Segmented } from "@/components/ui/segmented";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 function NumberField({
   label,
@@ -517,16 +528,12 @@ export function SettingsForm() {
       </form>
 
       {passwordOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
-          onClick={() => setPasswordOpen(false)}
-        >
-          <Card
-            className="w-full max-w-sm rounded-t-3xl shadow-lifted sm:rounded-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <CardContent className="space-y-3 pt-4">
-              <h3 className="font-medium">Change password</h3>
+        <Dialog open onOpenChange={(open) => !open && setPasswordOpen(false)}>
+          <DialogContent>
+            <div className="space-y-3">
+              <DialogTitle className="text-base font-medium">
+                Change password
+              </DialogTitle>
               <div className="space-y-1.5">
                 <Label htmlFor="pCurrent">Current password</Label>
                 <Input
@@ -563,21 +570,22 @@ export function SettingsForm() {
                   {pError}
                 </p>
               )}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-2">
+                <Button onClick={changePassword} disabled={pBusy} className="w-full">
+                  {pBusy ? "Changing..." : "Change password"}
+                </Button>
                 <Button
                   variant="outline"
                   onClick={() => setPasswordOpen(false)}
                   disabled={pBusy}
+                  className="w-full"
                 >
                   Cancel
                 </Button>
-                <Button onClick={changePassword} disabled={pBusy}>
-                  {pBusy ? "Changing..." : "Change password"}
-                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );

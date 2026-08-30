@@ -6,7 +6,7 @@ import { api, tzOffsetMinutes } from "@/lib/api";
 import type { MealDto } from "@/lib/types";
 import { useUser } from "@/components/user-context";
 import { dayKeyFor } from "@/lib/client-date";
-import { Card, CardContent } from "@/components/ui";
+import { Card, CardContent } from "@/components/ui/card";
 
 const DISMISS_PREFIX = "kaja-forgot-dismiss-";
 

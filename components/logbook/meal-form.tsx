@@ -10,7 +10,9 @@ import type { Suggestion } from "@/lib/db/schema";
 import type { Totals } from "@/lib/nutrition";
 import type { MealDto } from "@/lib/types";
 import { useUser } from "@/components/user-context";
-import { Button, Card, CardContent, Input } from "@/components/ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { MealResult } from "./meal-result";
 import { AnalysisOverlay } from "./analysis-overlay";
 

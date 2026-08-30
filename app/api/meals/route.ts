@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { meals, users, type Suggestion } from "@/lib/db/schema";
-import { requireUser, userContextText, geminiApiKey, jsonError } from "@/lib/utils";
+import { requireUser, userContextText, geminiApiKey, jsonError } from "@/lib/server";
 import { analyzeMeal, DEFAULT_GEMINI_MODEL } from "@/lib/gemini";
 import {
   targetsFromUser,

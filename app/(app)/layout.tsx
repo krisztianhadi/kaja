@@ -3,7 +3,7 @@ import { UserProvider, type UserDto } from "@/components/user-context";
 import { ToastProvider } from "@/components/toast";
 import { Nav } from "@/components/nav";
 import { PwaRegister } from "@/components/pwa-register";
-import { requireUser, userDto } from "@/lib/utils";
+import { requireUser, userDto } from "@/lib/server";
 
 export default async function AppLayout({
   children,

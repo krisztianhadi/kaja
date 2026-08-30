@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireUser, jsonError } from "@/lib/utils";
+import { requireUser, jsonError } from "@/lib/server";
 import { computeStats, dayKeyFor, type Range, type Scope } from "@/lib/stats";
 import { targetsFromUser, type Targets } from "@/lib/nutrition";
 import { targetsWithBudget, type OverrideMode } from "@/lib/budget";

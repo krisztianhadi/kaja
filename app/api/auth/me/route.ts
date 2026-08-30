@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireUser, userDto } from "@/lib/utils";
+import { requireUser, userDto } from "@/lib/server";
 
 export async function GET() {
   try {

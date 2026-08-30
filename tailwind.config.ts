@@ -55,8 +55,47 @@ const config: Config = {
         soft: "0 1px 2px rgb(20 14 10 / 0.04), 0 4px 16px rgb(20 14 10 / 0.06)",
         lifted: "0 2px 4px rgb(20 14 10 / 0.06), 0 12px 28px rgb(20 14 10 / 0.1)",
       },
+      keyframes: {
+        // Modals animate from the center (the keyframes keep the centering
+        // translate so the dialog never appears to slide in from a corner).
+        "dialog-in": {
+          from: {
+            opacity: "0",
+            transform: "translate(-50%, -50%) scale(0.95)",
+          },
+          to: {
+            opacity: "1",
+            transform: "translate(-50%, -50%) scale(1)",
+          },
+        },
+        "dialog-out": {
+          from: {
+            opacity: "1",
+            transform: "translate(-50%, -50%) scale(1)",
+          },
+          to: {
+            opacity: "0",
+            transform: "translate(-50%, -50%) scale(0.95)",
+          },
+        },
+        "sheet-in-bottom": {
+          from: {
+            opacity: "0",
+            transform: "translateY(12px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
+      },
+      animation: {
+        "dialog-in": "dialog-in 150ms ease-out",
+        "dialog-out": "dialog-out 120ms ease-in",
+        "sheet-in-bottom": "sheet-in-bottom 180ms ease-out",
+      },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };
 export default config;

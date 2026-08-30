@@ -13,7 +13,10 @@ import { useUser } from "@/components/user-context";
 import { useToast } from "@/components/toast";
 import { MealCard } from "@/components/logbook/meal-card";
 import { MealDetailDialog } from "@/components/logbook/meal-detail-dialog";
-import { Button, Card, CardContent, Progress, Segmented } from "@/components/ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Segmented } from "@/components/ui/segmented";
 
 type Range = "daily" | "weekly" | "monthly";
 type Scope = "me" | "family";

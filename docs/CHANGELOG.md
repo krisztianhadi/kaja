@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-08-30
+
+- [Change] Migrated the UI to the shadcn/ui component system (same stack as
+  Ghosted): `components/ui/*` with cva variants, Radix primitives (Dialog,
+  Label, Progress, Slot), `clsx` + `tailwind-merge` (`cn` in lib/utils.ts)
+  and `tailwindcss-animate` with dialog/sheet keyframes. Server-only
+  helpers moved to `lib/server.ts` so client components stay free of
+  `next/headers`. All modals (meal detail, delete confirm, password) now
+  use the Radix Dialog (focus trap, escape, aria) with the same
+  bottom-sheet-on-mobile styling.
+
 ## 2026-08-29
 
 - [Feature] Initial build of the Kaja food logbook: text + photo meal

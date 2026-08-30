@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { meals } from "@/lib/db/schema";
-import { requireUser, jsonError } from "@/lib/utils";
+import { requireUser, jsonError } from "@/lib/server";
 import { mealScaleForUser } from "@/lib/nutrition";
 import { recordMeal } from "@/lib/meal-service";
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { requireUser, userDto, jsonError } from "@/lib/utils";
+import { requireUser, userDto, jsonError } from "@/lib/server";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { settingsSchema } from "@/lib/validators";
 

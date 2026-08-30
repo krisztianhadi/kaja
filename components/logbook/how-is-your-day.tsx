@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Activity, Coffee, Zap } from "lucide-react";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import type { StatsResponse } from "@/lib/types";
-import { Segmented } from "@/components/ui";
+import { Segmented } from "@/components/ui/segmented";
 
 /**
  * "How is your day" - one-tap activity override for today.

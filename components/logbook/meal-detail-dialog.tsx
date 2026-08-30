@@ -5,13 +5,19 @@ import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { RotateCcw, Trash2, X } from "lucide-react";
 import type { MealDto } from "@/lib/types";
-import { Button, Card, CardContent } from "@/components/ui";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { NutritionGrid, SuggestionBlock } from "./meal-result";
 
 /**
  * Meal detail dialog: photo, original feedback, datasheet, then the
- * Delete action (opens a separate confirmation modal) above the
- * Close / Log again pair. Shared by the logbook and stats views.
+ * Delete action (opens a separate confirmation dialog) above the
+ * Log again / Close actions. Shared by the logbook and stats views.
  */
 export function MealDetailDialog({
   meal,
@@ -32,15 +38,9 @@ export function MealDetailDialog({
 
   return (
     <>
-      <div
-        className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
-        onClick={onClose}
-      >
-        <Card
-          className="w-full max-w-sm rounded-t-3xl shadow-lifted sm:rounded-2xl"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <CardContent className="space-y-3 pt-4">
+      <Dialog open onOpenChange={(open) => !open && onClose()}>
+        <DialogContent>
+          <div className="space-y-3">
             {meal.imageData && (
               <img
                 src={meal.imageData}
@@ -49,10 +49,10 @@ export function MealDetailDialog({
               />
             )}
             <div>
-              <h3 className="font-medium">
+              <DialogTitle className="text-base font-medium">
                 {meal.mealName || meal.description || "Meal"}
-              </h3>
-              <p className="text-xs text-muted-foreground">
+              </DialogTitle>
+              <DialogDescription className="mt-0.5 text-xs">
                 {[
                   meal.portion,
                   meal.participantIds.length > 1
@@ -68,7 +68,7 @@ export function MealDetailDialog({
                 ]
                   .filter(Boolean)
                   .join(" - ")}
-              </p>
+              </DialogDescription>
             </div>
             <NutritionGrid nutrition={meal.nutrition} />
             {meal.suggestion && <SuggestionBlock suggestion={meal.suggestion} />}
@@ -102,25 +102,21 @@ export function MealDetailDialog({
                 Close
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {confirmOpen && (
-        <div
-          className="fixed inset-0 z-[51] flex items-end justify-center bg-black/40 p-4 sm:items-center"
-          onClick={() => setConfirmOpen(false)}
-        >
-          <Card
-            className="w-full max-w-sm rounded-t-3xl shadow-lifted sm:rounded-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <CardContent className="space-y-3 pt-4">
-              <h3 className="font-medium">Delete this meal?</h3>
-              <p className="text-sm text-muted-foreground">
+        <Dialog open onOpenChange={(open) => !open && setConfirmOpen(false)}>
+          <DialogContent>
+            <div className="space-y-3">
+              <DialogTitle className="text-base font-medium">
+                Delete this meal?
+              </DialogTitle>
+              <DialogDescription>
                 {meal.mealName || meal.description || "Meal"} -{" "}
                 {Math.round(meal.nutrition.kcal)} kcal
-              </p>
+              </DialogDescription>
               <div className="space-y-2">
                 <Button
                   variant="destructive"
@@ -141,9 +137,9 @@ export function MealDetailDialog({
                   Cancel
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );

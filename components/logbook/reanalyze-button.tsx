@@ -6,7 +6,7 @@ import { RefreshCw } from "lucide-react";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import type { MealDto } from "@/lib/types";
-import { Button } from "@/components/ui";
+import { Button } from "@/components/ui/button";
 
 /**
  * "Analyze again" - re-runs the estimate with the stronger Gemini model

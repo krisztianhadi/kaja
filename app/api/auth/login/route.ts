@@ -6,7 +6,7 @@ import { verifyPassword } from "@/lib/auth/password";
 import { setSessionCookie } from "@/lib/auth/session";
 import { ensureUsers } from "@/lib/auth/seed-users";
 import { loginSchema } from "@/lib/validators";
-import { jsonError, userDto } from "@/lib/utils";
+import { jsonError, userDto } from "@/lib/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {

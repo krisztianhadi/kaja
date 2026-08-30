@@ -4,7 +4,7 @@ import { CheckCircle2, Info, TriangleAlert } from "lucide-react";
 import { cn } from "@/lib/cn";
 import type { Nutrition, Suggestion } from "@/lib/db/schema";
 import type { MealDto } from "@/lib/types";
-import { Card, CardContent } from "@/components/ui";
+import { Card, CardContent } from "@/components/ui/card";
 import { ReanalyzeButton } from "./reanalyze-button";
 
 function formatNumber(n: number): string {
