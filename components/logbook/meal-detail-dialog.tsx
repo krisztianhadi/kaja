@@ -72,23 +72,7 @@ export function MealDetailDialog({
             </div>
             <NutritionGrid nutrition={meal.nutrition} />
             {meal.suggestion && <SuggestionBlock suggestion={meal.suggestion} />}
-            {onDelete ? (
-              <div className="grid grid-cols-2 gap-2">
-                <Button onClick={onLogAgain} disabled={busy || deleting}>
-                  <RotateCcw className="h-4 w-4" />
-                  {busy ? "Recording..." : "Log again"}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-destructive/40 text-destructive hover:bg-destructive/10"
-                  onClick={() => setConfirmOpen(true)}
-                  disabled={busy || deleting}
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Delete meal
-                </Button>
-              </div>
-            ) : (
+            <div className="space-y-2">
               <Button
                 onClick={onLogAgain}
                 disabled={busy || deleting}
@@ -97,16 +81,27 @@ export function MealDetailDialog({
                 <RotateCcw className="h-4 w-4" />
                 {busy ? "Recording..." : "Log again"}
               </Button>
-            )}
-            <Button
-              variant="outline"
-              onClick={onClose}
-              disabled={busy || deleting}
-              className="w-full"
-            >
-              <X className="h-4 w-4" />
-              Close
-            </Button>
+              {onDelete && (
+                <Button
+                  variant="outline"
+                  className="w-full border-destructive/40 text-destructive hover:bg-destructive/10"
+                  onClick={() => setConfirmOpen(true)}
+                  disabled={busy || deleting}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete meal
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                onClick={onClose}
+                disabled={busy || deleting}
+                className="w-full"
+              >
+                <X className="h-4 w-4" />
+                Close
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -126,22 +121,24 @@ export function MealDetailDialog({
                 {meal.mealName || meal.description || "Meal"} -{" "}
                 {Math.round(meal.nutrition.kcal)} kcal
               </p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setConfirmOpen(false)}
-                  disabled={deleting}
-                >
-                  <X className="h-4 w-4" />
-                  Cancel
-                </Button>
+              <div className="space-y-2">
                 <Button
                   variant="destructive"
                   onClick={onDelete}
                   disabled={deleting}
+                  className="w-full"
                 >
                   <Trash2 className="h-4 w-4" />
                   {deleting ? "Deleting..." : "Delete"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setConfirmOpen(false)}
+                  disabled={deleting}
+                  className="w-full"
+                >
+                  <X className="h-4 w-4" />
+                  Cancel
                 </Button>
               </div>
             </CardContent>
