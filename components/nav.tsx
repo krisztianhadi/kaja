@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BarChart3,
   BookOpen,
@@ -31,6 +31,16 @@ export function Nav() {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Escape closes the menu
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
   const [signingOut, setSigningOut] = useState(false);
 
   const isActive = (href: string) =>
@@ -54,7 +64,8 @@ export function Nav() {
   }
 
   return (
-    <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-md">
+    <>
+      <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-md">
       <div className="relative mx-auto flex h-14 w-full max-w-2xl items-center gap-3 px-4">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <UtensilsCrossed className="h-5 w-5 text-primary" />
@@ -71,18 +82,21 @@ export function Nav() {
             <Menu className="h-5 w-5" />
           </Button>
         </div>
+      </div>
+    </header>
 
-        {menuOpen && (
-          <>
-            {/* click-away layer */}
-            <div
-              className="fixed inset-0 z-40"
-              onClick={() => setMenuOpen(false)}
-            />
-            <nav
-              role="menu"
-              className="absolute right-4 top-full z-40 mt-1.5 w-60 rounded-2xl border bg-card p-2 shadow-lifted"
-            >
+    {menuOpen && (
+      <>
+        {/* click-away layer - OUTSIDE the header's stacking context so it
+            sits above the pinned record box and everything on the page */}
+        <div
+          className="fixed inset-0 z-[45]"
+          onClick={() => setMenuOpen(false)}
+        />
+        <nav
+          role="menu"
+          className="fixed right-4 top-[3.875rem] z-[45] w-60 rounded-2xl border bg-card p-2 shadow-lifted"
+        >
               {/* user */}
               {user && (
                 <div className="flex items-center gap-2.5 px-3 pb-2.5 pt-1.5">
@@ -160,10 +174,9 @@ export function Nav() {
                 <LogOut className="h-4 w-4" />
                 {signingOut ? "Signing out..." : "Sign out"}
               </button>
-            </nav>
-          </>
-        )}
-      </div>
-    </header>
+          </nav>
+        </>
+      )}
+    </>
   );
 }
