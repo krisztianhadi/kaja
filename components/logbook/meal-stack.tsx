@@ -74,7 +74,10 @@ export function MealStack({
             addSuffix: true,
           });
           const Icon = mealIcon(meal.mealName + " " + meal.description);
-          const mealClass = classifyMeal(meal.nutrition);
+          const mealClass = classifyMeal(
+            meal.mealName + " " + meal.description,
+            meal.nutrition
+          );
           const dayPct =
             budgetKcal > 0 ? Math.round((meal.nutrition.kcal / budgetKcal) * 100) : 0;
           return (

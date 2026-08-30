@@ -66,4 +66,15 @@
   password typed twice, classic pattern).
 - [Feature] Toast notifications for settings save success/errors instead
   of inline text.
+- [Change] OpenRouter fallback now uses the same Gemini model
+  (`google/gemini-3-flash-preview`) via OpenRouter, so behavior matches the
+  direct call when the free quota is exhausted. No OpenAI/Anthropic models.
+  `deepseek/deepseek-v4-flash-vision-exp` verified working (vision + JSON)
+  as an alternative - slower (~25s per call).
+- [Fix] Meal severity classification is now context-aware, not just
+  numeric: traditional thai kitchen dishes (som tum, pad ka pao, ...) are
+  never trashfood, known junk food is matched by name (mcdonalds, chips,
+  cola, chocolate cake, ...), health foods (smoothies, protein shakes,
+  salads) are judged by numbers only, and the numeric junk signature
+  requires high sugar AND high sodium.
 

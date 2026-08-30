@@ -138,9 +138,12 @@ const RESPONSE_SCHEMA = {
 
 /**
  * OpenRouter fallback model used when Gemini is unavailable (quota/429,
- * 5xx, network). Vision-capable and reliable JSON output.
+ * 5xx, network). Uses the SAME Gemini model via OpenRouter so behavior
+ * matches the direct call (fast, vision-capable, reliable JSON).
+ * Alternatives that work: deepseek/deepseek-v4-flash-vision-exp
+ * (vision + JSON, but ~25s per call).
  */
-export const OPENROUTER_FALLBACK_MODEL = "openai/gpt-4o-mini";
+export const OPENROUTER_FALLBACK_MODEL = "google/gemini-3-flash-preview";
 
 export interface AnalysisResult {
   estimate: AiEstimate;
