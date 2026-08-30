@@ -52,7 +52,13 @@ export function TodayStrip() {
         newestMeal.id,
         newestMeal.nutrition,
         t,
-        totals ? { sugarG: totals.sugarG, sodiumMg: totals.sodiumMg } : undefined
+        totals
+          ? {
+              kcal: totals.kcal,
+              sugarG: totals.sugarG,
+              sodiumMg: totals.sodiumMg,
+            }
+          : undefined
       )
     : null;
 
@@ -113,9 +119,11 @@ export function TodayStrip() {
         <div
           className={cn(
             "mt-4 flex items-start gap-2 rounded-xl border p-3 text-sm",
-            dayTip.kind === "sugar"
-              ? "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-200"
-              : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-200"
+            dayTip.kind === "stop"
+              ? "border-[hsl(8_55%_45%_/_0.35)] bg-[hsl(8_55%_45%_/_0.08)] text-[hsl(8_55%_45%)] dark:border-[hsl(8_55%_60%_/_0.45)] dark:bg-[hsl(8_55%_45%_/_0.16)] dark:text-[hsl(8_55%_70%)]"
+              : dayTip.kind === "sugar"
+                ? "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-200"
+                : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-200"
           )}
         >
           <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />

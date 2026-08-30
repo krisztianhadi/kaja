@@ -36,6 +36,14 @@ const SODIUM_OVER_TIPS = [
   "Past the sodium budget - light, fresh food only for the rest of the day.",
 ];
 
+// the day is over calories: the strongest signal - stop eating, full stop
+const STOP_OVER_TIPS = [
+  "You are over your calorie target for today - it is time to stop eating.",
+  "The day budget is done - put the fork down, the log will still work.",
+  "Over budget for today - stop eating and let your body catch up.",
+  "Enough for today - close the logbook and have some water instead.",
+];
+
 /** Threshold: a meal counts as a "big jump" when it carries this much of the day's target. */
 const JUMP_RATIO = 0.3;
 
@@ -48,7 +56,7 @@ function hashId(id: string): number {
 }
 
 export interface DayTip {
-  kind: "sugar" | "sodium";
+  kind: "stop" | "sugar" | "sodium";
   tip: string;
 }
 
@@ -59,18 +67,28 @@ export function dayTipForMeal(
     "kcal" | "proteinG" | "fatG" | "carbsG" | "sugarG" | "sodiumMg"
   >,
   targets: Targets,
-  dayTotals?: Pick<Totals, "sugarG" | "sodiumMg">
+  dayTotals?: Pick<Totals, "kcal" | "sugarG" | "sodiumMg">
 ): DayTip | null {
   const sugarRatio = targets.sugarG > 0 ? nutrition.sugarG / targets.sugarG : 0;
   const sodiumRatio =
     targets.sodiumMg > 0 ? nutrition.sodiumMg / targets.sodiumMg : 0;
 
+  const dayKcalOver =
+    !!dayTotals && targets.kcal > 0 && dayTotals.kcal > targets.kcal;
   const daySugarOver =
     !!dayTotals && targets.sugarG > 0 && dayTotals.sugarG > targets.sugarG;
   const daySodiumOver =
     !!dayTotals &&
     targets.sodiumMg > 0 &&
     dayTotals.sodiumMg > targets.sodiumMg * 1.15;
+
+  // over calories is the strongest signal - stop eating, not sugar advice
+  if (dayKcalOver) {
+    return {
+      kind: "stop",
+      tip: STOP_OVER_TIPS[hashId(mealId) % STOP_OVER_TIPS.length],
+    };
+  }
 
   // the day is already past a target: warn to stop/lighten, never add food
   if (daySugarOver || daySodiumOver) {
