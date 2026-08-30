@@ -72,10 +72,7 @@ export function MealDetailDialog({
             </div>
             <NutritionGrid nutrition={meal.nutrition} />
             {meal.suggestion && (
-                <SuggestionBlock
-                  suggestion={meal.suggestion}
-                  nutrition={meal.nutrition}
-                />
+<SuggestionBlock suggestion={meal.suggestion} />
               )}
             <div className="space-y-2">
               {onDelete && (

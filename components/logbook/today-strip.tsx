@@ -1,9 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { Lightbulb } from "lucide-react";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { severityClass } from "@/lib/severity";
+import { dayTipForMeal } from "@/lib/tips";
 import type { StatsResponse } from "@/lib/types";
 import { Progress } from "@/components/ui/progress";
 import { useUser } from "@/components/user-context";
@@ -41,6 +43,13 @@ export function TodayStrip() {
         : null;
 
   const kcalPct = totals && t.kcal > 0 ? (totals.kcal / t.kcal) * 100 : 0;
+
+  // deterministic counter-action tip: triggered when the newest meal made
+  // a big jump in the day's sugar or sodium (decoupled from the AI)
+  const newestMeal = day?.meals?.[0];
+  const dayTip = newestMeal
+    ? dayTipForMeal(newestMeal.id, newestMeal.nutrition, t)
+    : null;
 
   return (
     <div className="rounded-2xl border bg-card p-4 shadow-soft">
@@ -92,6 +101,20 @@ export function TodayStrip() {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {dayTip && (
+        <div
+          className={cn(
+            "mt-4 flex items-start gap-2 rounded-xl border p-3 text-sm",
+            dayTip.kind === "sugar"
+              ? "border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-200"
+              : "border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-200"
+          )}
+        >
+          <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+          <p className="text-sm">{dayTip.tip}</p>
         </div>
       )}
     </div>

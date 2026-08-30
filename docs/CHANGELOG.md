@@ -24,6 +24,13 @@
   tells the AI to keep suggestions practical (hydration, electrolytes).
   Salty/sweet meals now get a deterministic hydration tip in the feedback
   ("Salty meal - drink an extra glass of water to help flush the salt").
+- [Feature] Deterministic counter-action tips in the budget box: when the
+  newest meal makes a big jump in the day's sugar or sodium (>= 30% of the
+  daily target), a practical tip appears under the budget (e.g. "Feeling
+  jittery after that sugar? Nuts or Greek yogurt..." / "Salty meal - drink
+  extra water..."). Decoupled from the AI suggestion, zero model cost, and
+  picked from a pool via the meal id so the tip varies between meals.
+
 - [Change] Migrated the UI to the shadcn/ui component system (same stack as
   Ghosted): `components/ui/*` with cva variants, Radix primitives (Dialog,
   Label, Progress, Slot), `clsx` + `tailwind-merge` (`cn` in lib/utils.ts)
