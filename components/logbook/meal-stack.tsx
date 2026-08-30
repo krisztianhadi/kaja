@@ -86,7 +86,7 @@ export function MealStack({
               type="button"
               onClick={() => setSelected(meal)}
               className={cn(
-                "block w-full rounded-2xl border shadow-soft transition-colors hover:brightness-[0.98]",
+                "block w-full rounded-2xl border text-left shadow-soft transition-colors hover:brightness-[0.98]",
                 MEAL_CLASS_TINTS[mealClass],
                 flashId === meal.id && "ring-2 ring-primary"
               )}
@@ -127,12 +127,7 @@ export function MealStack({
                       </div>
                     </>
                   ) : (
-                    <div className="text-right">
-                      <div className="text-sm font-semibold">{dayPct}%</div>
-                      <div className="text-[10px] leading-tight text-muted-foreground">
-                        of day
-                      </div>
-                    </div>
+                    <div className="text-sm font-semibold">{dayPct}%</div>
                   )}
                 </div>
               </CardContent>

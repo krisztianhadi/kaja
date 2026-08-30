@@ -83,4 +83,7 @@
   filters are full-width segmented groups, settings save is full width.
 - [Fix] Meal cards: the percentage now sits above a small "of day" caption
   instead of one inline line.
+- [Fix] Meal card titles and subtitles are left-aligned (button elements
+  default to centered text), and the small "of day" caption was dropped -
+  the bare percentage is self-explanatory.
 
