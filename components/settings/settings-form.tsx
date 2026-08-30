@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { KeyRound, LogOut } from "lucide-react";
+import { KeyRound, LogOut, UserRound } from "lucide-react";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { useUser } from "@/components/user-context";
@@ -112,6 +112,13 @@ export function SettingsForm() {
   const [pBusy, setPBusy] = useState(false);
   const [pError, setPError] = useState<string | null>(null);
 
+  // change username modal
+  const [uOpen, setUOpen] = useState(false);
+  const [uCurrent, setUCurrent] = useState("");
+  const [uNew, setUNew] = useState("");
+  const [uBusy, setUBusy] = useState(false);
+  const [uError, setUError] = useState<string | null>(null);
+
   const [busy, setBusy] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
 
@@ -214,6 +221,30 @@ export function SettingsForm() {
       setPError(err instanceof Error ? err.message : "Could not change password");
     } finally {
       setPBusy(false);
+    }
+  }
+
+  async function changeUsername() {
+    if (!uNew.trim()) {
+      setUError("Enter a username");
+      return;
+    }
+    setUError(null);
+    setUBusy(true);
+    try {
+      await api("/api/settings", {
+        method: "PATCH",
+        body: JSON.stringify({ currentPassword: uCurrent, username: uNew.trim() }),
+      });
+      toast("Username changed");
+      setUOpen(false);
+      setUCurrent("");
+      setUNew("");
+      router.refresh();
+    } catch (err) {
+      setUError(err instanceof Error ? err.message : "Could not change username");
+    } finally {
+      setUBusy(false);
     }
   }
 
@@ -541,7 +572,7 @@ export function SettingsForm() {
         </Card>
 
         <Card>
-          <CardContent className="pt-4">
+          <CardContent className="space-y-2 pt-4">
             <Button
               type="button"
               variant="outline"
@@ -550,6 +581,15 @@ export function SettingsForm() {
             >
               <KeyRound className="h-4 w-4" />
               Change password
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setUOpen(true)}
+              className="w-full"
+            >
+              <UserRound className="h-4 w-4" />
+              Change username
             </Button>
           </CardContent>
         </Card>
@@ -620,6 +660,56 @@ export function SettingsForm() {
                   variant="outline"
                   onClick={() => setPasswordOpen(false)}
                   disabled={pBusy}
+                  className="w-full"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {uOpen && (
+        <Dialog open onOpenChange={(open) => !open && setUOpen(false)}>
+          <DialogContent>
+            <div className="space-y-3">
+              <DialogTitle className="text-base font-medium">
+                Change username
+              </DialogTitle>
+              <div className="space-y-1.5">
+                <Label htmlFor="uCurrent">Current password</Label>
+                <Input
+                  id="uCurrent"
+                  type="password"
+                  value={uCurrent}
+                  onChange={(e) => setUCurrent(e.target.value)}
+                  autoComplete="current-password"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="uNew">New username</Label>
+                <Input
+                  id="uNew"
+                  value={uNew}
+                  onChange={(e) => setUNew(e.target.value)}
+                  autoComplete="username"
+                  placeholder="e.g. krisz"
+                />
+              </div>
+              {uError && (
+                <p className="text-sm text-destructive" role="alert">
+                  {uError}
+                </p>
+              )}
+              <div className="space-y-2">
+                <Button onClick={changeUsername} disabled={uBusy} className="w-full">
+                  {uBusy ? "Changing..." : "Change username"}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setUOpen(false)}
+                  disabled={uBusy}
                   className="w-full"
                 >
                   Cancel

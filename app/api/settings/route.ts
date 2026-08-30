@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { requireUser, userDto, jsonError } from "@/lib/server";
@@ -43,6 +43,26 @@ export async function PATCH(request: Request) {
         return jsonError(401, "Current password is wrong");
       }
       update.passwordHash = await hashPassword(d.password);
+    }
+
+    if (d.username !== undefined) {
+      const currentPassword = String(
+        (body as Record<string, unknown>).currentPassword ?? ""
+      );
+      if (!(await verifyPassword(currentPassword, user.passwordHash))) {
+        return jsonError(401, "Current password is wrong");
+      }
+      const taken = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(
+          and(eq(users.username, d.username), ne(users.id, user.id))
+        )
+        .limit(1);
+      if (taken.length > 0) {
+        return jsonError(409, "Username is already taken");
+      }
+      update.username = d.username;
     }
 
     if (d.geminiApiKey !== undefined) {
