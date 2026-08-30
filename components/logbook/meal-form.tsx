@@ -131,6 +131,7 @@ export function MealForm({
                 title="Add a photo"
                 aria-label="Add a photo"
                 disabled={busy}
+                className="rounded-xl"
               >
                 <ImagePlus className="h-5 w-5" />
               </Button>

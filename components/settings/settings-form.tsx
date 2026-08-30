@@ -7,7 +7,6 @@ import { api } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { useUser } from "@/components/user-context";
 import { useTheme, type ThemeMode } from "@/components/theme";
-import { THEME_PRESETS, type ThemePreset } from "@/lib/theme-presets";
 import { useToast } from "@/components/toast";
 import { bmiCategory, computeBmi } from "@/lib/body";
 import { REGIONS } from "@/lib/regions";
@@ -67,7 +66,7 @@ const selectClass =
 export function SettingsForm() {
   const user = useUser();
   const router = useRouter();
-  const { mode, setMode, preset, setPreset } = useTheme();
+  const { mode, setMode } = useTheme();
   const { toast } = useToast();
 
   const [apiKey, setApiKey] = useState("");
@@ -500,15 +499,6 @@ export function SettingsForm() {
         <Card>
           <CardContent className="space-y-3 pt-4">
             <h2 className="text-sm font-semibold">Appearance</h2>
-            <Segmented<ThemePreset>
-              fullWidth
-              value={preset}
-              onChange={setPreset}
-              options={THEME_PRESETS.map((t) => ({
-                value: t.value,
-                label: t.label,
-              }))}
-            />
             <Segmented<ThemeMode>
               fullWidth
               value={mode}

@@ -24,7 +24,7 @@ export const viewport: Viewport = {
   themeColor: "#faf7f2",
 };
 
-const themeInitScript = `try{var m=localStorage.getItem("kaja-theme")||"system";var d=m==="dark"||(m==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);if(d)document.documentElement.classList.add("dark");var p=localStorage.getItem("kaja-theme-preset")||"emerald";if(p!=="emerald")document.documentElement.classList.add("theme-"+p);}catch(e){}`;
+const themeInitScript = `try{var m=localStorage.getItem("kaja-theme")||"system";var d=m==="dark"||(m==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);if(d)document.documentElement.classList.add("dark");}catch(e){}`;
 
 export default function RootLayout({
   children,
