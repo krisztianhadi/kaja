@@ -2,12 +2,22 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { format, parseISO } from "date-fns";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { cn } from "@/lib/cn";
+import { dayKeyFor } from "@/lib/client-date";
 import type { MealDto } from "@/lib/types";
 import { useToast } from "@/components/toast";
 import { MealCard } from "./meal-card";
 import { MealDetailDialog } from "./meal-detail-dialog";
+
+const MS_DAY = 86_400_000;
+
+function dayLabel(key: string, todayKey: string, yesterdayKey: string): string {
+  if (key === todayKey) return "Today";
+  if (key === yesterdayKey) return "Yesterday";
+  return format(parseISO(key), "EEEE, MMM d");
+}
 
 export function MealStack({
   onRecorded,
@@ -77,19 +87,39 @@ export function MealStack({
   return (
     <>
       <div className="space-y-2" aria-label="Previously recorded meals">
-        {meals.map((meal) => (
-          <div
-            key={meal.id}
-            className={cn(flashId === meal.id && "rounded-2xl ring-2 ring-primary")}
-          >
-            <MealCard
-              meal={meal}
-              budgetKcal={budgetKcal}
-              scientific={scientific}
-              onClick={() => setSelected(meal)}
-            />
-          </div>
-        ))}
+        {meals.map((meal, index) => {
+          const offset = tzOffsetMinutes();
+          const day = dayKeyFor(new Date(meal.createdAt).getTime(), offset);
+          const now = Date.now();
+          const todayKey = dayKeyFor(now, offset);
+          const yesterdayKey = dayKeyFor(now - MS_DAY, offset);
+          const prevDay =
+            index > 0
+              ? dayKeyFor(new Date(meals[index - 1].createdAt).getTime(), offset)
+              : null;
+          const showHeader = day !== prevDay;
+          return (
+            <div key={meal.id}>
+              {showHeader && (
+                <h3 className="px-1 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {dayLabel(day, todayKey, yesterdayKey)}
+                </h3>
+              )}
+              <div
+                className={cn(
+                  flashId === meal.id && "rounded-2xl ring-2 ring-primary"
+                )}
+              >
+                <MealCard
+                  meal={meal}
+                  budgetKcal={budgetKcal}
+                  scientific={scientific}
+                  onClick={() => setSelected(meal)}
+                />
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {selected && (

@@ -2,6 +2,12 @@
 
 ## 2026-08-30
 
+- [Fix] Inverted timezone sign in the day-boundary calculation: meals were
+  attributed to the wrong local day for timezones east of UTC (the user is
+  in Thailand, UTC+7 - everything recorded before 07:00 UTC looked
+  "not counted"). `dayKeyFor` now computes `ts - offset` correctly.
+- [Feature] Meal history is grouped with day separators ("Today",
+  "Yesterday", weekday) so it is obvious which day each meal belongs to.
 - [Change] Migrated the UI to the shadcn/ui component system (same stack as
   Ghosted): `components/ui/*` with cva variants, Radix primitives (Dialog,
   Label, Progress, Slot), `clsx` + `tailwind-merge` (`cn` in lib/utils.ts)
