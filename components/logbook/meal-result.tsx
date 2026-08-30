@@ -34,8 +34,10 @@ export function SuggestionBlock({
             icon: <Info className="h-4 w-4 shrink-0 text-amber-600" />,
           }
         : {
-            bg: "bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-950/40 dark:border-emerald-900/40 dark:text-emerald-200",
-            icon: <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />,
+            bg: "border-[hsl(150_35%_70%)] bg-[hsl(150_30%_95%)] text-[hsl(150_45%_25%)] dark:border-[hsl(150_30%_35%)] dark:bg-[hsl(150_25%_14%)] dark:text-[hsl(150_35%_80%)]",
+            icon: (
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-[hsl(150_45%_30%)]" />
+            ),
           };
 
   return (
@@ -75,43 +77,3 @@ export function NutritionGrid({ nutrition }: { nutrition: Nutrition }) {
 }
 
 type ResultMeal = MealDto;
-
-export function MealResult({
-  data,
-  onUpdated,
-}: {
-  data: {
-    meal: ResultMeal;
-    suggestion: Suggestion;
-  };
-  onUpdated?: (meal: ResultMeal) => void;
-}) {
-  const title = data.meal.mealName || data.meal.portion || "Recorded meal";
-  return (
-    <Card className="border-primary/30">
-      <CardContent className="space-y-3 pt-4">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <h3 className="font-medium">{title}</h3>
-            <p className="text-xs text-muted-foreground">
-              {data.meal.portion}
-              {data.meal.portion && " - "}
-              {data.meal.source === "repeat"
-                ? "re-recorded from cache, no AI"
-                : `AI estimate (${data.meal.confidence} confidence)`}
-              {data.meal.model ? ` - ${data.meal.model}` : ""}
-            </p>
-          </div>
-        </div>
-        <NutritionGrid nutrition={data.meal.nutrition} />
-        <SuggestionBlock suggestion={data.suggestion} />
-        {data.meal.confidence !== "high" && data.meal.id && (
-          <ReanalyzeButton
-            mealId={data.meal.id}
-            onDone={(m) => onUpdated?.(m)}
-          />
-        )}
-      </CardContent>
-    </Card>
-  );
-}

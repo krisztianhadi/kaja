@@ -77,7 +77,7 @@ export function TodayStrip() {
                 : `${Math.round(kcalPct)}%`}
             </span>
           </div>
-          <Progress value={kcalPct} barClassName={severityClass(kcalPct)} />
+          <Progress value={kcalPct} aria-label="Calories intake" barClassName={severityClass(kcalPct)} />
           <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:grid-cols-4">
             {[
               { label: "protein", value: totals.proteinG, target: t.proteinG, unit: "g" },
@@ -96,7 +96,7 @@ export function TodayStrip() {
                         : `${Math.round(p)}%`}
                     </span>
                   </div>
-                  <Progress value={p} className="mt-1" barClassName={severityClass(p)} />
+                  <Progress value={p} className="mt-1" aria-label={`${m.label} intake`} barClassName={severityClass(p)} />
                 </div>
               );
             })}

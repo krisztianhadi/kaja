@@ -115,11 +115,11 @@ export function classifyMeal(
 /** Light tint classes per class (bg + border, dark variants included). */
 export const MEAL_CLASS_TINTS: Record<MealClass, string> = {
   balanced:
-    "border-emerald-200 bg-emerald-50/60 dark:border-emerald-900/40 dark:bg-emerald-950/20",
+    "border-[hsl(150_35%_70%)] bg-[hsl(150_30%_95%_/_0.6)] dark:border-[hsl(150_30%_35%)] dark:bg-[hsl(150_25%_14%_/_0.4)]",
   light:
-    "border-blue-200 bg-blue-50/60 dark:border-blue-900/40 dark:bg-blue-950/20",
+    "border-[hsl(85_30%_65%)] bg-[hsl(85_35%_94%_/_0.6)] dark:border-[hsl(85_25%_35%)] dark:bg-[hsl(85_20%_14%_/_0.4)]",
   heavy:
     "border-amber-200 bg-amber-50/60 dark:border-amber-900/40 dark:bg-amber-950/20",
   trashfood:
-    "border-red-200 bg-red-50/60 dark:border-red-900/40 dark:bg-red-950/20",
+    "border-[hsl(8_45%_65%)] bg-[hsl(8_45%_95%_/_0.6)] dark:border-[hsl(8_40%_35%)] dark:bg-[hsl(8_30%_14%_/_0.4)]",
 };

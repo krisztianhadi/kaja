@@ -10,10 +10,11 @@ import type { Suggestion } from "@/lib/db/schema";
 import type { Totals } from "@/lib/nutrition";
 import type { MealDto } from "@/lib/types";
 import { useUser } from "@/components/user-context";
+import { useToast } from "@/components/toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MealResult } from "./meal-result";
+import { MealResultDialog } from "./meal-result-dialog";
 import { AnalysisOverlay } from "./analysis-overlay";
 
 interface RecordResponse {
@@ -36,8 +37,29 @@ export function MealForm({
   const [participants, setParticipants] = useState<string[]>([]);
   const [showShared, setShowShared] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [dismissing, setDismissing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [last, setLast] = useState<RecordResponse | null>(null);
+  const { toast } = useToast();
+
+  /** Dismiss removes the just-recorded meal (undo the record). */
+  async function dismissFreshMeal() {
+    if (!last) return;
+    setDismissing(true);
+    try {
+      await api(`/api/meals/${last.meal.id}`, { method: "DELETE" });
+      toast("Meal discarded");
+      setLast(null);
+      queryClient.invalidateQueries({ queryKey: ["meals"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+    } catch (err) {
+      toast(
+        err instanceof Error ? err.message : "Could not discard the meal",
+        "error"
+      );
+      setDismissing(false);
+    }
+  }
 
   const { data: family } = useQuery({
     queryKey: ["users"],
@@ -242,8 +264,12 @@ export function MealForm({
       <AnalysisOverlay show={busy} label="Analyzing your meal..." />
 
       {last && (
-        <MealResult
-          data={last}
+        <MealResultDialog
+          meal={last.meal}
+          suggestion={last.suggestion}
+          busy={dismissing}
+          onSave={() => setLast(null)}
+          onDismiss={dismissFreshMeal}
           onUpdated={(meal) =>
             setLast((prev) => (prev ? { ...prev, meal } : prev))
           }

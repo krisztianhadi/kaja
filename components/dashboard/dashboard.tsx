@@ -100,6 +100,7 @@ function MacroBar({ label, value, target, unit, showPct }: {
       <Progress
         value={showPct ? p : 0}
         className="mt-1"
+        aria-label={`${label} intake`}
         barClassName={severityClass(p)}
       />
     </div>
@@ -260,7 +261,7 @@ function DailyView({
             {showPct && <span className="text-muted-foreground">{kcalPct}% of target</span>}
           </div>
           {showPct && (
-            <Progress value={kcalPct} barClassName={severityClass(kcalPct)} />
+            <Progress value={kcalPct} aria-label="Calories intake" barClassName={severityClass(kcalPct)} />
           )}
           {totals.meals === 0 && (
             <p className="text-xs text-muted-foreground">
