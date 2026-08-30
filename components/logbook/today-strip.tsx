@@ -61,11 +61,11 @@ export function TodayStrip() {
       {totals && totals.meals > 0 && (
         <div className="mt-4">
           <div className="mb-1.5 flex items-baseline justify-between text-sm">
-            <span className="font-semibold">Today</span>
+            <span className="font-semibold">Calories</span>
             <span className="text-muted-foreground">
               {scientific
                 ? `${fmt(totals.kcal)} / ${fmt(t.kcal)} kcal (${Math.round(kcalPct)}%)`
-                : `${Math.round(kcalPct)}% of budget`}
+                : `${Math.round(kcalPct)}%`}
             </span>
           </div>
           <Progress value={kcalPct} barClassName={severityClass(kcalPct)} />

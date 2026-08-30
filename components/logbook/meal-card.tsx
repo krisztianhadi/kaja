@@ -2,7 +2,6 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
-import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/cn";
 import type { MealDto } from "@/lib/types";
 import { classifyMeal, MEAL_CLASS_TINTS } from "@/lib/meal-class";
@@ -10,21 +9,19 @@ import { mealIcon } from "./food-icon";
 
 /**
  * One meal card, shared by the logbook stack and the stats view.
- * Clicking opens the detail dialog (when onClick is given); onDelete
- * renders a trash button instead.
+ * Clicking opens the detail dialog (when onClick is given); destructive
+ * actions live in the detail dialog, not on the card.
  */
 export function MealCard({
   meal,
   budgetKcal,
   scientific,
   onClick,
-  onDelete,
 }: {
   meal: MealDto;
   budgetKcal: number;
   scientific: boolean;
   onClick?: () => void;
-  onDelete?: () => void;
 }) {
   const title = meal.mealName || meal.description || meal.portion || "Meal";
   const time = formatDistanceToNow(new Date(meal.createdAt), {
@@ -97,19 +94,6 @@ export function MealCard({
           <div className="text-sm font-semibold">{dayPct}%</div>
         )}
       </div>
-      {onDelete && (
-        <button
-          type="button"
-          aria-label="Delete meal"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete();
-          }}
-          className="shrink-0 rounded-full p-2 text-muted-foreground transition-colors hover:bg-red-50 hover:text-destructive dark:hover:bg-red-950/40"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
-      )}
     </div>
   );
 }

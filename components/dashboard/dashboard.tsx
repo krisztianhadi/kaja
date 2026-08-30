@@ -207,14 +207,13 @@ function DailyView({
   const scientific = user?.scientific ?? false;
 
   const [selected, setSelected] = useState<MealDto | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<MealDto | null>(null);
 
   const deleteMeal = useMutation({
     mutationFn: (id: string) =>
       api(`/api/meals/${id}`, { method: "DELETE" }),
     onSuccess: () => {
       toast("Meal deleted");
-      setDeleteTarget(null);
+      setSelected(null);
       queryClient.invalidateQueries({ queryKey: ["meals"] });
       queryClient.invalidateQueries({ queryKey: ["stats"] });
     },
@@ -289,7 +288,6 @@ function DailyView({
               budgetKcal={data.budget.kcal}
               scientific={scientific}
               onClick={() => setSelected(m)}
-              onDelete={() => setDeleteTarget(m)}
             />
           ))}
         </div>
@@ -299,45 +297,11 @@ function DailyView({
         <MealDetailDialog
           meal={selected}
           busy={repeat.isPending}
+          deleting={deleteMeal.isPending}
           onClose={() => setSelected(null)}
           onLogAgain={() => repeat.mutate(selected.id)}
+          onDelete={() => deleteMeal.mutate(selected.id)}
         />
-      )}
-
-      {deleteTarget && (
-        <div
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
-          onClick={() => setDeleteTarget(null)}
-        >
-          <Card
-            className="w-full max-w-sm rounded-t-3xl shadow-lifted sm:rounded-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <CardContent className="space-y-3 pt-4">
-              <h3 className="font-medium">Delete this meal?</h3>
-              <p className="text-sm text-muted-foreground">
-                {deleteTarget.mealName || deleteTarget.description || "Meal"} -{" "}
-                {Math.round(deleteTarget.nutrition.kcal)} kcal
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => setDeleteTarget(null)}
-                  disabled={deleteMeal.isPending}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => deleteMeal.mutate(deleteTarget.id)}
-                  disabled={deleteMeal.isPending}
-                >
-                  {deleteMeal.isPending ? "Deleting..." : "Delete"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       )}
     </div>
   );

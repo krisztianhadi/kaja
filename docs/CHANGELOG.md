@@ -96,4 +96,11 @@
   cards as the logbook, with a delete button (and confirmation) instead of
   "Analyze again". "Analyze again" now appears only on the fresh result
   card right after recording.
+- [Fix] The delete action moved from the card into the detail dialog (with
+  an inline confirmation step) and now works on the main view too - the
+  same meal card + dialog mechanism in both places.
+- [Fix] Budget container: the intake header reads "Calories" and the bare
+  percentage is shown (no "of budget" suffix - "Today's budget" is already
+  written above).
+- [Fix] The Record button uses the fork-and-knife icon from the logo.
 

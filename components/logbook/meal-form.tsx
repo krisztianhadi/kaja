@@ -3,7 +3,7 @@
 
 import { useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ImagePlus, Send, Users, X } from "lucide-react";
+import { ImagePlus, UtensilsCrossed, Users, X } from "lucide-react";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { fileToDownscaledDataUri } from "@/lib/image";
 import type { Suggestion } from "@/lib/db/schema";
@@ -173,7 +173,7 @@ export function MealForm({
                     "Estimating..."
                   ) : (
                     <>
-                      <Send className="h-4 w-4" />
+                      <UtensilsCrossed className="h-4 w-4" />
                       Record
                     </>
                   )}
@@ -189,7 +189,7 @@ export function MealForm({
                   "Estimating..."
                 ) : (
                   <>
-                    <Send className="h-4 w-4" />
+                    <UtensilsCrossed className="h-4 w-4" />
                     Record
                   </>
                 )}

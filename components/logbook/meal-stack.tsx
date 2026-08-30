@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import type { MealDto } from "@/lib/types";
+import { useToast } from "@/components/toast";
 import { MealCard } from "./meal-card";
 import { MealDetailDialog } from "./meal-detail-dialog";
 
@@ -18,6 +19,7 @@ export function MealStack({
   scientific: boolean;
 }) {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [selected, setSelected] = useState<MealDto | null>(null);
   const [flashId, setFlashId] = useState<string | null>(null);
 
@@ -39,6 +41,22 @@ export function MealStack({
       onRecorded(data.meal);
       queryClient.invalidateQueries({ queryKey: ["meals"] });
       queryClient.invalidateQueries({ queryKey: ["stats"] });
+    },
+  });
+
+  const deleteMeal = useMutation({
+    mutationFn: (id: string) => api(`/api/meals/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      toast("Meal deleted");
+      setSelected(null);
+      queryClient.invalidateQueries({ queryKey: ["meals"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+    },
+    onError: (err) => {
+      toast(
+        err instanceof Error ? err.message : "Could not delete the meal",
+        "error"
+      );
     },
   });
 
@@ -81,8 +99,10 @@ export function MealStack({
         <MealDetailDialog
           meal={selected}
           busy={repeat.isPending}
+          deleting={deleteMeal.isPending}
           onClose={() => setSelected(null)}
           onLogAgain={() => repeat.mutate(selected.id)}
+          onDelete={() => deleteMeal.mutate(selected.id)}
         />
       )}
     </>
