@@ -88,39 +88,39 @@ const config: Config = {
             transform: "translateY(0)",
           },
         },
-        // analysis loader: food icons fall into the robot head
+        // analysis loader: food icons travel left-to-right into the robot
         "kaja-fall": {
           "0%": {
             opacity: "0",
-            transform: "translate(-50%, -50%) translateY(-72px) scale(1)",
+            transform: "translate(-50%, -50%) translateX(-150px)",
           },
           "15%": { opacity: "1" },
-          "72%": {
+          "62%": {
             opacity: "1",
-            transform: "translate(-50%, -50%) translateY(0) scale(1)",
+            transform: "translate(-50%, -50%) translateX(0)",
           },
           "100%": {
             opacity: "0",
-            transform: "translate(-50%, -50%) translateY(0) scale(0.15)",
+            transform: "translate(-50%, -50%) translateX(0)",
           },
         },
-        // analysis loader: report sheets come out under the head
+        // analysis loader: report sheets come out the right side of the robot
         "kaja-out": {
           "0%": {
             opacity: "0",
-            transform: "translate(-50%, -50%) scale(0.2)",
+            transform: "translate(-50%, -50%) translateX(0) scale(0.6)",
           },
-          "25%": {
+          "12%": {
             opacity: "1",
-            transform: "translate(-50%, -50%) translateY(6px) scale(0.6)",
+            transform: "translate(-50%, -50%) translateX(0) scale(1)",
           },
-          "72%": {
+          "62%": {
             opacity: "1",
-            transform: "translate(-50%, -50%) translateY(52px) scale(1)",
+            transform: "translate(-50%, -50%) translateX(150px) scale(1)",
           },
           "100%": {
             opacity: "0",
-            transform: "translate(-50%, -50%) translateY(72px) scale(1)",
+            transform: "translate(-50%, -50%) translateX(190px) scale(1)",
           },
         },
         // analysis loader: the robot head breathes while working
