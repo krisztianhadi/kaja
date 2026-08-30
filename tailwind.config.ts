@@ -88,11 +88,60 @@ const config: Config = {
             transform: "translateY(0)",
           },
         },
+        // analysis loader: food icons fall into the robot head
+        "kaja-fall": {
+          "0%": {
+            opacity: "0",
+            transform: "translate(-50%, -50%) translateY(-72px) scale(1)",
+          },
+          "15%": { opacity: "1" },
+          "72%": {
+            opacity: "1",
+            transform: "translate(-50%, -50%) translateY(0) scale(1)",
+          },
+          "100%": {
+            opacity: "0",
+            transform: "translate(-50%, -50%) translateY(0) scale(0.15)",
+          },
+        },
+        // analysis loader: report sheets come out under the head
+        "kaja-out": {
+          "0%": {
+            opacity: "0",
+            transform: "translate(-50%, -50%) scale(0.2)",
+          },
+          "25%": {
+            opacity: "1",
+            transform: "translate(-50%, -50%) translateY(6px) scale(0.6)",
+          },
+          "72%": {
+            opacity: "1",
+            transform: "translate(-50%, -50%) translateY(52px) scale(1)",
+          },
+          "100%": {
+            opacity: "0",
+            transform: "translate(-50%, -50%) translateY(72px) scale(1)",
+          },
+        },
+        // analysis loader: the robot head breathes while working
+        "kaja-breathe": {
+          "0%, 100%": {
+            transform: "translate(-50%, -50%) scale(1)",
+            opacity: "1",
+          },
+          "50%": {
+            transform: "translate(-50%, -50%) scale(1.06)",
+            opacity: "0.85",
+          },
+        },
       },
       animation: {
         "dialog-in": "dialog-in 150ms ease-out",
         "dialog-out": "dialog-out 120ms ease-in",
         "sheet-in-bottom": "sheet-in-bottom 180ms ease-out",
+        "kaja-fall": "kaja-fall 2.7s linear infinite",
+        "kaja-out": "kaja-out 2.7s linear infinite",
+        "kaja-breathe": "kaja-breathe 2.2s ease-in-out infinite",
       },
     },
   },
