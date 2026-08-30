@@ -78,3 +78,38 @@
     touch-action: manipulation;
   }
 }
+
+/* ---- theme presets (shadcn-style base color picks) ----
+     each overrides the primary/ring hue; emerald is the default. */
+  .theme-ocean {
+    --primary: 210 70% 42%;
+    --ring: 210 70% 42%;
+  }
+  .dark.theme-ocean {
+    --primary: 210 65% 55%;
+    --ring: 210 65% 55%;
+  }
+  .theme-sunset {
+    --primary: 25 75% 45%;
+    --ring: 25 75% 45%;
+  }
+  .dark.theme-sunset {
+    --primary: 25 70% 55%;
+    --ring: 25 70% 55%;
+  }
+  .theme-violet {
+    --primary: 262 60% 50%;
+    --ring: 262 60% 50%;
+  }
+  .dark.theme-violet {
+    --primary: 262 60% 62%;
+    --ring: 262 60% 62%;
+  }
+  .theme-raspberry {
+    --primary: 345 70% 45%;
+    --ring: 345 70% 45%;
+  }
+  .dark.theme-raspberry {
+    --primary: 345 70% 56%;
+    --ring: 345 70% 56%;
+  }

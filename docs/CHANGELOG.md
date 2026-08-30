@@ -30,6 +30,13 @@
   jittery after that sugar? Nuts or Greek yogurt..." / "Salty meal - drink
   extra water..."). Decoupled from the AI suggestion, zero model cost, and
   picked from a pool via the meal id so the tip varies between meals.
+- [Change] Primary buttons are now pill-shaped (Record, Sign in, Log
+  again, Save); secondary/outline buttons stay rounded-xl.
+- [Change] Main page order: budget block, how-is-your-day, record block,
+  meal history.
+- [Feature] shadcn-style theme presets in Settings > Appearance (Emerald
+  default, Ocean, Sunset, Violet, Raspberry) - each with light and dark
+  variants, persisted per device, applied before hydration.
 
 - [Change] Migrated the UI to the shadcn/ui component system (same stack as
   Ghosted): `components/ui/*` with cva variants, Radix primitives (Dialog,
