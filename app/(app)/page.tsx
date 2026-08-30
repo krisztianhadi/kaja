@@ -22,21 +22,30 @@ export default function LogbookPage() {
   });
 
   return (
-    <div className="space-y-4">
-      <ForgotBanner />
-      <TodayStrip />
-      <HowIsYourDay />
-      <MealForm onRecorded={() => {}} />
-      <div>
-        <h2 className="mb-2 px-1 text-sm font-medium text-muted-foreground">
-          Previous meals
-        </h2>
-        <MealStack
-          onRecorded={() => {}}
-          budgetKcal={stats?.budget.kcal ?? 2000}
-          scientific={user?.scientific ?? false}
-        />
+    <>
+      {/* scrollable content, with room for the pinned record box below */}
+      <div className="space-y-4 pb-48">
+        <ForgotBanner />
+        <TodayStrip />
+        <HowIsYourDay />
+        <div>
+          <h2 className="mb-2 px-1 text-sm font-medium text-muted-foreground">
+            Previous meals
+          </h2>
+          <MealStack
+            onRecorded={() => {}}
+            budgetKcal={stats?.budget.kcal ?? 2000}
+            scientific={user?.scientific ?? false}
+          />
+        </div>
       </div>
-    </div>
+
+      {/* record box pinned to the bottom of the viewport */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
+        <div className="mx-auto w-full max-w-2xl px-4 pt-3">
+          <MealForm onRecorded={() => {}} />
+        </div>
+      </div>
+    </>
   );
 }

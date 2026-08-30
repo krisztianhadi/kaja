@@ -2,6 +2,23 @@
 
 ## 2026-08-30
 
+- [Change] Bistro/coffeeshop theme: warm cream + coffee brown + terracotta
+  primary (darkened for contrast), pine green as the "good" color
+  (severity bars sage -> pine -> clay, balanced meal tint + ok suggestion
+  tone), sage for light meals, clay for trashfood. Icons + favicon
+  regenerated in terracotta.
+- [Fix] Accessibility: axe-core 4.13 WCAG 2.1 AA - 0 violations on all
+  pages in light and dark (progress bars got accessible names,
+  muted-foreground and primary contrast fixed).
+- [Feature] Fresh meal result is now a bottom-sheet modal (same style as
+  the detail view) with Analyze again (when not high confidence) / Save
+  meal / Dismiss (removes the just-recorded meal).
+- [Change] Navigation: bottom tab bar removed, replaced with a hamburger
+  menu in the header (Logbook / Stats / Settings). The record box is
+  pinned to the bottom of the viewport on the logbook - everything else
+  scrolls under it.
+
+
 - [Fix] Inverted timezone sign in the day-boundary calculation: meals were
   attributed to the wrong local day for timezones east of UTC (the user is
   in Thailand, UTC+7 - everything recorded before 07:00 UTC looked
