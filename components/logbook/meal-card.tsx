@@ -5,7 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/cn";
 import type { MealDto } from "@/lib/types";
 import { classifyMeal, MEAL_CLASS_TINTS } from "@/lib/meal-class";
-import { mineralBadges } from "@/lib/mineral-badges";
+import { foodLabels } from "@/lib/food-labels";
 import { mealIcon } from "./food-icon";
 
 /**
@@ -33,7 +33,7 @@ export function MealCard({
     meal.mealName + " " + meal.description,
     meal.nutrition
   );
-  const badges = mineralBadges(meal.mealName + " " + meal.description);
+  const labels = foodLabels(meal.mealName + " " + meal.description);
   const dayPct =
     budgetKcal > 0 ? Math.round((meal.nutrition.kcal / budgetKcal) * 100) : 0;
 
@@ -78,24 +78,16 @@ export function MealCard({
           {meal.portion ? `${meal.portion} - ` : ""}
           {time}
         </div>
-        {(badges.potassium || badges.magnesium) && (
-          <div className="mt-1 flex gap-1">
-            {badges.potassium && (
+        {labels.length > 0 && (
+          <div className="mt-1 flex flex-wrap gap-1">
+            {labels.map((label) => (
               <span
-                title="Rich in potassium"
+                key={label}
                 className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
               >
-                potassium
+                {label}
               </span>
-            )}
-            {badges.magnesium && (
-              <span
-                title="Rich in magnesium"
-                className="rounded-full bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
-              >
-                magnesium
-              </span>
-            )}
+            ))}
           </div>
         )}
       </div>
