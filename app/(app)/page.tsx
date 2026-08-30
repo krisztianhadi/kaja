@@ -24,9 +24,9 @@ export default function LogbookPage() {
   return (
     <div className="space-y-4">
       <ForgotBanner />
-      <MealForm onRecorded={() => {}} />
-      <HowIsYourDay />
       <TodayStrip />
+      <HowIsYourDay />
+      <MealForm onRecorded={() => {}} />
       <div>
         <h2 className="mb-2 px-1 text-sm font-medium text-muted-foreground">
           Previous meals
