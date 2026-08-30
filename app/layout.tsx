@@ -6,6 +6,13 @@ export const metadata: Metadata = {
   title: "Kaja - food logbook",
   description: "A simple food logbook with AI-assisted nutrition estimates.",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/icons/apple-touch-icon.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
