@@ -23,8 +23,8 @@ export default function LogbookPage() {
 
   return (
     <>
-      {/* scrollable content, with room for the pinned record box below */}
-      <div className="space-y-4 pb-36">
+      {/* scrollable content; the record box floats over a soft scrim below */}
+      <div className="space-y-4">
         <ForgotBanner />
         <TodayStrip />
         <HowIsYourDay />
