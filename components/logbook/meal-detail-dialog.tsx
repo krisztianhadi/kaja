@@ -72,32 +72,41 @@ export function MealDetailDialog({
             </div>
             <NutritionGrid nutrition={meal.nutrition} />
             {meal.suggestion && <SuggestionBlock suggestion={meal.suggestion} />}
-            {onDelete && (
+            {onDelete ? (
+              <div className="grid grid-cols-2 gap-2">
+                <Button onClick={onLogAgain} disabled={busy || deleting}>
+                  <RotateCcw className="h-4 w-4" />
+                  {busy ? "Recording..." : "Log again"}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-destructive/40 text-destructive hover:bg-destructive/10"
+                  onClick={() => setConfirmOpen(true)}
+                  disabled={busy || deleting}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete meal
+                </Button>
+              </div>
+            ) : (
               <Button
-                type="button"
-                variant="outline"
-                className="w-full border-destructive/40 text-destructive hover:bg-destructive/10"
-                onClick={() => setConfirmOpen(true)}
+                onClick={onLogAgain}
                 disabled={busy || deleting}
+                className="w-full"
               >
-                <Trash2 className="h-4 w-4" />
-                Delete meal
-              </Button>
-            )}
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="outline"
-                onClick={onClose}
-                disabled={busy || deleting}
-              >
-                <X className="h-4 w-4" />
-                Close
-              </Button>
-              <Button onClick={onLogAgain} disabled={busy || deleting}>
                 <RotateCcw className="h-4 w-4" />
                 {busy ? "Recording..." : "Log again"}
               </Button>
-            </div>
+            )}
+            <Button
+              variant="outline"
+              onClick={onClose}
+              disabled={busy || deleting}
+              className="w-full"
+            >
+              <X className="h-4 w-4" />
+              Close
+            </Button>
           </CardContent>
         </Card>
       </div>
