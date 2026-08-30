@@ -2,6 +2,11 @@
 
 ## 2026-08-30
 
+- [Feature] Non-food handling: the AI flags items that are not food
+  (concrete brick, plastic, electronics, ...) via `isFood` in the response
+  schema. Nothing gets stored - the client shows a fun modal (skull icon,
+  rotating joke message) with a Dismiss button instead of the result modal.
+
 - [Change] Bistro/coffeeshop theme: warm cream + coffee brown + terracotta
   primary (darkened for contrast), pine green as the "good" color
   (severity bars sage -> pine -> clay, balanced meal tint + ok suggestion

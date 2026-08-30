@@ -15,12 +15,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { MealResultDialog } from "./meal-result-dialog";
+import { NotFoodDialog } from "./not-food-dialog";
 import { AnalysisOverlay } from "./analysis-overlay";
 
 interface RecordResponse {
   meal: MealDto;
   totals: Totals;
   suggestion: Suggestion;
+}
+
+/** The AI decided the item is not food - nothing was saved. */
+interface NotFoodResponse {
+  notFood: true;
+  mealName: string | null;
+  description: string;
 }
 
 export function MealForm({
@@ -43,6 +51,7 @@ export function MealForm({
   const [focused, setFocused] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [last, setLast] = useState<RecordResponse | null>(null);
+  const [notFood, setNotFood] = useState<NotFoodResponse | null>(null);
   const { toast } = useToast();
 
   /** Dismiss removes the just-recorded meal (undo the record). */
@@ -109,15 +118,23 @@ export function MealForm({
       }
       form.append("tzOffsetMinutes", String(tzOffsetMinutes()));
 
-      const data = await api<RecordResponse>("/api/meals", {
+      const data = await api<RecordResponse | NotFoodResponse>("/api/meals", {
         method: "POST",
         body: form,
       });
-      setLast(data);
       setDescription("");
       setPhoto(null);
       setParticipants([]);
-      onRecorded(data.meal);
+      if ("notFood" in data) {
+        // the AI said this is not food - nothing was saved, show the fun modal
+        setNotFood(data as NotFoodResponse);
+        queryClient.invalidateQueries({ queryKey: ["meals"] });
+        queryClient.invalidateQueries({ queryKey: ["stats"] });
+        return;
+      }
+      const result = data as RecordResponse;
+      setLast(result);
+      onRecorded(result.meal);
       queryClient.invalidateQueries({ queryKey: ["meals"] });
       queryClient.invalidateQueries({ queryKey: ["stats"] });
     } catch (err) {
@@ -276,6 +293,13 @@ export function MealForm({
       </Card>
 
       <AnalysisOverlay show={busy} label="Analyzing your meal..." />
+
+      {notFood && (
+        <NotFoodDialog
+          item={notFood.mealName ?? notFood.description}
+          onDismiss={() => setNotFood(null)}
+        />
+      )}
 
       {last && (
         <MealResultDialog

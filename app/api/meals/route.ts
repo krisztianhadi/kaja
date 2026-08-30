@@ -146,6 +146,16 @@ export async function POST(request: Request) {
     });
     const estimate = result.estimate;
 
+    // not food (brick, plastic, electronics, ...) - never save it, tell the
+    // client so it can show the fun "not food" modal instead
+    if (estimate.isFood === false) {
+      return NextResponse.json({
+        notFood: true,
+        mealName: estimate.mealName || null,
+        description: description.slice(0, 120),
+      });
+    }
+
     const suggestion: Suggestion = {
       level: rule.level,
       name: rule.name,

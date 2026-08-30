@@ -42,6 +42,10 @@ data URI, optional), `participantIds` (JSON array of user ids, optional),
 `GEMINI_TOKEN`), stores the meal, returns
 `{ meal, totals, suggestion }` where `totals` is the user's fresh day totals.
 
+If the AI decides the item is NOT food (brick, plastic, electronics, ...),
+nothing is stored and it returns `{ notFood: true, mealName, description }`
+so the client can show the fun "not food" modal instead of the result modal.
+
 Relative time words in the description backdate the meal:
 "yesterday", "last night", "N days ago", "the day before yesterday",
 "this morning". The phrase is removed from the text sent to the AI.

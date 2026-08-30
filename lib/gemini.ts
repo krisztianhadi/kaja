@@ -25,6 +25,7 @@ export interface Nutrition {
 export const nutritionSchema = z.object({
   mealName: z.string().default(""),
   portion: z.string().default(""),
+  isFood: z.boolean().default(true),
   nutrition: z.object({
     kcal: z.number(),
     proteinG: z.number(),
@@ -82,12 +83,14 @@ function buildPrompt(input: AnalyzeInput): string {
     "",
     `Food to estimate: ${desc}`,
     "",
+    "If the item is NOT food (e.g. a concrete brick, plastic, electronics, a rock, a phone), set isFood to false, name what it actually is in mealName, and set all nutrition values to 0.",
+    "",
     input.reanalysis
       ? "This is a RE-ANALYSIS to improve a previous estimate. Be more careful and precise: state exactly what you are assuming and give the most plausible single estimate."
       : "",
     "",
     "Respond ONLY with JSON in this exact shape:",
-    '{ "mealName": string, "portion": string, "nutrition": { "kcal": number, "proteinG": number, "fatG": number, "carbsG": number, "sugarG": number, "sodiumMg": number }, "confidence": "high"|"medium"|"low", "suggestion": { "confirmsRule": boolean, "extra": string|null } }',
+    '{ "mealName": string, "portion": string, "isFood": boolean, "nutrition": { "kcal": number, "proteinG": number, "fatG": number, "carbsG": number, "sugarG": number, "sodiumMg": number }, "confidence": "high"|"medium"|"low", "suggestion": { "confirmsRule": boolean, "extra": string|null } }',
   ].join("\n");
 }
 
@@ -116,6 +119,7 @@ const RESPONSE_SCHEMA = {
   properties: {
     mealName: { type: "string" },
     portion: { type: "string" },
+    isFood: { type: "boolean" },
     nutrition: {
       type: "object",
       properties: {
@@ -138,7 +142,7 @@ const RESPONSE_SCHEMA = {
       required: ["confirmsRule", "extra"],
     },
   },
-  required: ["mealName", "portion", "nutrition", "confidence", "suggestion"],
+  required: ["mealName", "portion", "isFood", "nutrition", "confidence", "suggestion"],
 };
 
 /**
