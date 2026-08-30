@@ -85,12 +85,18 @@ export function MealForm({
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
-    if (file.size > 4 * 1024 * 1024) {
-      setError("Photo too large (max 4MB)");
+    // sanity cap only - phone photos (8-12MB) are fine, they get
+    // downscaled below; this only stops absurd/huge files
+    if (file.size > 30 * 1024 * 1024) {
+      setError("Photo too large (max 30MB)");
       return;
     }
     try {
       const dataUri = await fileToDownscaledDataUri(file);
+      if (dataUri.length > 4 * 1024 * 1024 * 1.4) {
+        setError("Photo too large (max 4MB)");
+        return;
+      }
       setPhoto(dataUri);
       setError(null);
     } catch {
