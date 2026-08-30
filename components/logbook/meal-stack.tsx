@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { api, tzOffsetMinutes } from "@/lib/api";
@@ -35,7 +36,7 @@ export function MealStack({
 
   const { data, isPending } = useQuery({
     queryKey: ["meals"],
-    queryFn: () => api<{ meals: MealDto[] }>("/api/meals?limit=40"),
+    queryFn: () => api<{ meals: MealDto[] }>("/api/meals?limit=20"),
   });
 
   const repeat = useMutation({
@@ -121,6 +122,13 @@ export function MealStack({
           );
         })}
       </div>
+
+      <Link
+        href="/dashboard"
+        className="flex items-center justify-center gap-2 rounded-full border border-input bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+      >
+        View full history
+      </Link>
 
       {selected && (
         <MealDetailDialog
