@@ -86,4 +86,14 @@
 - [Fix] Meal card titles and subtitles are left-aligned (button elements
   default to centered text), and the small "of day" caption was dropped -
   the bare percentage is self-explanatory.
+- [Feature] Icons on the "How is your day" buttons (lazy/average/active).
+- [Feature] The budget box only shows the exact kcal number and the
+  override note in scientific view; otherwise it is percentages only.
+- [Feature] Full-screen blurred loader while the model analyzes a meal.
+- [Feature] The "Shared" button is hidden until another family member
+  exists.
+- [Feature] Dashboard renamed to Stats; the daily view uses the same meal
+  cards as the logbook, with a delete button (and confirmation) instead of
+  "Analyze again". "Analyze again" now appears only on the fresh result
+  card right after recording.
 

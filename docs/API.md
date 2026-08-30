@@ -49,6 +49,10 @@ Relative time words in the description backdate the meal:
 Errors: 400 (invalid input), 503 (no Gemini key configured), 502 (analysis
 failed).
 
+### `DELETE /api/meals/[id]`
+Deletes a meal the user can see (authored or shared with them). Returns
+`{ ok: true }`.
+
 ### `POST /api/meals/[id]/reanalyze`
 Re-runs the estimate with the stronger Gemini model
 (`GEMINI_MODEL_BETTER`, default `gemini-3.6-flash`) and updates the meal in

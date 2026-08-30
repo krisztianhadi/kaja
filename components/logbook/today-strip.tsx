@@ -45,10 +45,13 @@ export function TodayStrip() {
   return (
     <div className="rounded-2xl border bg-card p-4 shadow-soft">
       <div className="text-xs text-muted-foreground">Today's budget</div>
-      <div className="text-2xl font-bold">{fmt(budget.kcal)} kcal</div>
-      {note && (
-        <div className="mt-0.5 text-xs font-medium text-primary">{note}</div>
+      {scientific && (
+        <div className="text-2xl font-bold">{fmt(budget.kcal)} kcal</div>
       )}
+      {scientific &&
+        (note ? (
+          <div className="mt-0.5 text-xs font-medium text-primary">{note}</div>
+        ) : null)}
       {!budget.complete && (
         <div className="mt-0.5 text-xs text-muted-foreground">
           Add age and gender in Settings for an accurate budget.

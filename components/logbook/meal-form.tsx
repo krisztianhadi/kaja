@@ -12,6 +12,7 @@ import type { MealDto } from "@/lib/types";
 import { useUser } from "@/components/user-context";
 import { Button, Card, CardContent, Input } from "@/components/ui";
 import { MealResult } from "./meal-result";
+import { AnalysisOverlay } from "./analysis-overlay";
 
 interface RecordResponse {
   meal: MealDto;
@@ -151,22 +152,39 @@ export function MealForm({
               </div>
             )}
 
-            <div className="mt-3 grid grid-cols-2 gap-2">
+            {others.length > 0 ? (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setShowShared((s) => !s)}
+                  className="w-full"
+                >
+                  <Users className="h-4 w-4" />
+                  Shared
+                  {participants.length > 0 && (
+                    <span className="rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">
+                      {participants.length}
+                    </span>
+                  )}
+                </Button>
+                <Button type="submit" disabled={!canSubmit} className="w-full">
+                  {busy ? (
+                    "Estimating..."
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      Record
+                    </>
+                  )}
+                </Button>
+              </div>
+            ) : (
               <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowShared((s) => !s)}
-                className="w-full"
+                type="submit"
+                disabled={!canSubmit}
+                className="mt-3 w-full"
               >
-                <Users className="h-4 w-4" />
-                Shared
-                {participants.length > 0 && (
-                  <span className="rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">
-                    {participants.length}
-                  </span>
-                )}
-              </Button>
-              <Button type="submit" disabled={!canSubmit} className="w-full">
                 {busy ? (
                   "Estimating..."
                 ) : (
@@ -176,7 +194,7 @@ export function MealForm({
                   </>
                 )}
               </Button>
-            </div>
+            )}
 
             {showShared && (
               <div className="mt-2 flex flex-wrap items-center gap-1.5 border-t pt-3">
@@ -217,6 +235,8 @@ export function MealForm({
           )}
         </CardContent>
       </Card>
+
+      <AnalysisOverlay show={busy} label="Analyzing your meal..." />
 
       {last && (
         <MealResult

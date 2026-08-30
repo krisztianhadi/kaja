@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Activity, Coffee, Zap } from "lucide-react";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import type { StatsResponse } from "@/lib/types";
 import { Segmented } from "@/components/ui";
@@ -42,9 +43,9 @@ export function HowIsYourDay() {
         value={data.budget.overrideMode}
         onChange={setMode}
         options={[
-          { value: "less", label: "Lazy" },
-          { value: "usual", label: "Average" },
-          { value: "more", label: "Active" },
+          { value: "less", label: "Lazy", icon: <Coffee className="h-4 w-4" /> },
+          { value: "usual", label: "Average", icon: <Activity className="h-4 w-4" /> },
+          { value: "more", label: "Active", icon: <Zap className="h-4 w-4" /> },
         ]}
       />
     </div>

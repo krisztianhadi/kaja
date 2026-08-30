@@ -1,14 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { dayKeyFor } from "@/lib/client-date";
 import { cn } from "@/lib/cn";
 import { severityClass } from "@/lib/severity";
-import type { StatsResponse } from "@/lib/types";
+import type { MealDto, StatsResponse } from "@/lib/types";
+import { useUser } from "@/components/user-context";
+import { useToast } from "@/components/toast";
+import { MealCard } from "@/components/logbook/meal-card";
+import { MealDetailDialog } from "@/components/logbook/meal-detail-dialog";
 import { Button, Card, CardContent, Progress, Segmented } from "@/components/ui";
 
 type Range = "daily" | "weekly" | "monthly";
@@ -197,6 +201,45 @@ function DailyView({
   onShift: (d: number) => void;
   showPct: boolean;
 }) {
+  const user = useUser();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const scientific = user?.scientific ?? false;
+
+  const [selected, setSelected] = useState<MealDto | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<MealDto | null>(null);
+
+  const deleteMeal = useMutation({
+    mutationFn: (id: string) =>
+      api(`/api/meals/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      toast("Meal deleted");
+      setDeleteTarget(null);
+      queryClient.invalidateQueries({ queryKey: ["meals"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+    },
+    onError: (err) => {
+      toast(
+        err instanceof Error ? err.message : "Could not delete the meal",
+        "error"
+      );
+    },
+  });
+
+  const repeat = useMutation({
+    mutationFn: (id: string) =>
+      api<{ meal: MealDto }>(
+        `/api/meals/${id}/repeat?tzOffsetMinutes=${tzOffsetMinutes()}`,
+        { method: "POST" }
+      ),
+    onSuccess: () => {
+      toast("Meal recorded again");
+      setSelected(null);
+      queryClient.invalidateQueries({ queryKey: ["meals"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+    },
+  });
+
   const day = data.days[0];
   const t = data.targets;
   if (!day) return null;
@@ -235,30 +278,66 @@ function DailyView({
       {day.meals.length === 0 ? (
         <p className="text-sm text-muted-foreground">No meals on this day.</p>
       ) : (
-        <Card>
-          <CardContent className="space-y-2 pt-4">
-            <h3 className="text-sm font-medium">Meals</h3>
-            {day.meals.map((m) => (
-              <div key={m.id} className="flex items-center justify-between gap-3 text-sm">
-                <div className="min-w-0">
-                  <div className="truncate">
-                    {format(parseISO(m.createdAt), "HH:mm")} -{" "}
-                    {m.mealName || m.description || "Meal"}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {m.participantIds.length > 1
-                      ? `shared (${m.participantIds.length} people) - `
-                      : ""}
-                    {m.portion}
-                  </div>
-                </div>
-                <div className="shrink-0 font-medium">
-                  {fmt(m.nutrition.kcal)} kcal
-                </div>
+        <div className="space-y-2">
+          <h3 className="px-1 text-sm font-medium text-muted-foreground">
+            Meals
+          </h3>
+          {day.meals.map((m) => (
+            <MealCard
+              key={m.id}
+              meal={m}
+              budgetKcal={data.budget.kcal}
+              scientific={scientific}
+              onClick={() => setSelected(m)}
+              onDelete={() => setDeleteTarget(m)}
+            />
+          ))}
+        </div>
+      )}
+
+      {selected && (
+        <MealDetailDialog
+          meal={selected}
+          busy={repeat.isPending}
+          onClose={() => setSelected(null)}
+          onLogAgain={() => repeat.mutate(selected.id)}
+        />
+      )}
+
+      {deleteTarget && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
+          onClick={() => setDeleteTarget(null)}
+        >
+          <Card
+            className="w-full max-w-sm rounded-t-3xl shadow-lifted sm:rounded-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <CardContent className="space-y-3 pt-4">
+              <h3 className="font-medium">Delete this meal?</h3>
+              <p className="text-sm text-muted-foreground">
+                {deleteTarget.mealName || deleteTarget.description || "Meal"} -{" "}
+                {Math.round(deleteTarget.nutrition.kcal)} kcal
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setDeleteTarget(null)}
+                  disabled={deleteMeal.isPending}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => deleteMeal.mutate(deleteTarget.id)}
+                  disabled={deleteMeal.isPending}
+                >
+                  {deleteMeal.isPending ? "Deleting..." : "Delete"}
+                </Button>
               </div>
-            ))}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       )}
     </div>
   );
