@@ -11,7 +11,7 @@ import {
 } from "@/lib/nutrition";
 import { targetsWithBudget } from "@/lib/budget";
 import { ruleSuggestion } from "@/lib/suggestions";
-import { budgetForDay } from "@/lib/override";
+import { budgetForDay, getOverrideMode } from "@/lib/override";
 import { fetchVisibleMeals, recordMeal } from "@/lib/meal-service";
 import { mealToDto, dayKeyFor } from "@/lib/stats";
 import { parseBackdate } from "@/lib/backdate";
@@ -111,9 +111,11 @@ export async function POST(request: Request) {
     // the AI gets the description with the time phrase removed
     const { clean, createdAt } = parseBackdate(description);
 
-    // effective kcal target = today's BMR/TDEE budget
+    // effective kcal target = today's BMR/TDEE budget; the activity
+    // override also scales the sodium target in hot climates
+    const overrideMode = (await getOverrideMode(user.id, dayKey)) ?? "usual";
     const budget = await budgetForDay(user, dayKey);
-    const targets = targetsWithBudget(targetsFromUser(user), budget.kcal);
+    const targets = targetsWithBudget(targetsFromUser(user, overrideMode), budget.kcal);
 
     // today's totals so far (me scope) - for the suggestion and the AI prompt
     const since = Date.now() - 3 * MS_DAY - tzOffsetMin * 60_000;

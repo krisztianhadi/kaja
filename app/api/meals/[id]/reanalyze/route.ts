@@ -14,7 +14,7 @@ import { fetchVisibleMeals } from "@/lib/meal-service";
 import { mealToDto, dayKeyFor } from "@/lib/stats";
 import { mealScaleForUser } from "@/lib/nutrition";
 import { parseBackdate } from "@/lib/backdate";
-import { budgetForDay } from "@/lib/override";
+import { budgetForDay, getOverrideMode } from "@/lib/override";
 
 const MS_DAY = 86_400_000;
 
@@ -61,8 +61,9 @@ export async function POST(
     const dayMeals = visible.filter(
       (m) => dayKeyFor(m.createdAt.getTime(), tzOffsetMin) === dayKey
     );
+    const overrideMode = (await getOverrideMode(user.id, dayKey)) ?? "usual";
     const budget = await budgetForDay(user, dayKey);
-    const targets = targetsWithBudget(targetsFromUser(user), budget.kcal);
+    const targets = targetsWithBudget(targetsFromUser(user, overrideMode), budget.kcal);
     const dayTotals = totalsForMeals(dayMeals, user.id);
     const rule = ruleSuggestion(dayTotals, targets);
 

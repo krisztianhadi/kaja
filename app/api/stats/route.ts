@@ -37,14 +37,15 @@ export async function GET(request: Request) {
         ? await fetchVisibleMeals(user.id, since)
         : await fetchVisibleMeals(user.id, since, 500); // family: everything counts
 
-    // effective calorie target = BMR/TDEE budget for the anchor day
-    const budget = await budgetForDay(user, date);
-    const targets: Targets = targetsWithBudget(
-      targetsFromUser(user),
-      budget.kcal
-    );
+    // effective calorie target = BMR/TDEE budget for the anchor day;
+    // the activity override also scales the sodium target in hot climates
     const overrideMode = ((await getOverrideMode(user.id, date)) ??
       "usual") as OverrideMode;
+    const budget = await budgetForDay(user, date);
+    const targets: Targets = targetsWithBudget(
+      targetsFromUser(user, overrideMode),
+      budget.kcal
+    );
 
     const stats = computeStats(
       visible,
