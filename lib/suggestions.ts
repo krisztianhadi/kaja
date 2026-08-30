@@ -20,7 +20,9 @@ export function ruleSuggestion(
         "Sugar is above your daily target. Balance the rest of the day with healthy fats - Greek yogurt, nuts, or avocado.",
     };
   }
-  if (hasMeals && ratio(totals.sodiumMg, targets.sodiumMg) > 1) {
+  // sodium gets headroom: a normal salty meal can push 100-115% of the DV,
+  // only meaningfully-over days should trigger the counter-action
+  if (hasMeals && ratio(totals.sodiumMg, targets.sodiumMg) > 1.15) {
     return {
       level: "high",
       name: "sodium",

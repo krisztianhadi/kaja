@@ -13,6 +13,12 @@
   region (e.g. Gai Yang in Thailand) instead of generic advice like
   "more lean protein". Fed into the meal analysis prompt and the
   re-analysis prompt.
+- [Fix] Daily sugar target 25g -> 40g: the AI estimates TOTAL sugar
+  (fruit, honey, milk included) but 25g is the WHO limit for FREE/ADDED
+  sugar only, so normal meals blew past it. Sodium suggestion now triggers
+  above 115% of the target instead of 100% (a normal salty meal can sit at
+  100-115% of the DV). Cleaned up stale test targets on the demo user
+  (sodium 1500 -> 2300).
 - [Change] Migrated the UI to the shadcn/ui component system (same stack as
   Ghosted): `components/ui/*` with cva variants, Radix primitives (Dialog,
   Label, Progress, Slot), `clsx` + `tailwind-merge` (`cn` in lib/utils.ts)

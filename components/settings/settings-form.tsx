@@ -97,7 +97,7 @@ export function SettingsForm() {
     targetProteinG: user?.targetProteinG ?? 50,
     targetFatG: user?.targetFatG ?? 70,
     targetCarbsG: user?.targetCarbsG ?? 250,
-    targetSugarG: user?.targetSugarG ?? 25,
+    targetSugarG: user?.targetSugarG ?? 40,
     targetSodiumMg: user?.targetSodiumMg ?? 2300,
   });
 

@@ -14,7 +14,11 @@ export const DEFAULT_TARGETS: Targets = {
   proteinG: 50,
   fatG: 70,
   carbsG: 250,
-  sugarG: 25,
+  // total sugar (the AI estimates total, incl. natural sugars from fruit,
+  // honey, milk) - the WHO 25g figure applies to FREE/ADDED sugar only,
+  // so 40g is the sane yardstick for total sugar
+  sugarG: 40,
+  // FDA daily value
   sodiumMg: 2300,
 };
 
