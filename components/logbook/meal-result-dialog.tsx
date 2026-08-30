@@ -71,7 +71,10 @@ export function MealResultDialog({
             {meal.confidence !== "high" && (
               <ReanalyzeButton mealId={meal.id} onDone={onUpdated ?? (() => {})} />
             )}
-            <Button onClick={onSave} disabled={busy} className="w-full">
+            {/* Save just closes the dialog - the meal is already stored
+                server-side, so it is never disabled. Only Dismiss waits
+                for its DELETE. */}
+            <Button onClick={onSave} className="w-full">
               <Check className="h-4 w-4" />
               Save meal
             </Button>

@@ -77,6 +77,8 @@ function buildPrompt(input: AnalyzeInput): string {
     `A local rule check produced this suggestion: "${input.ruleSuggestionText}"`,
     "If the rule suggestion is reasonable for this user, set suggestion.confirmsRule to true.",
     "If a different or additional counter action would be more useful (considering the user's context), set confirmsRule to false and/or fill suggestion.extra with ONE short actionable suggestion.",
+    "The user's day may ALREADY be over a target (sugar, sodium, calories). When it is, do NOT recommend another dish or more food - the counter action is to stop, go light, or hydrate. Only suggest a specific food or dish when the day still has room in its targets.",
+    "The meal being estimated is ALREADY LOGGED - it is a post-meal record. Never tell the user to avoid or not eat this meal; phrase the counter action for the REST of the day.",
     input.location
       ? `The user is in ${input.location}. When suggesting a counter-action meal, recommend a specific dish that is commonly available and familiar there (e.g. local street food or home cooking), not generic advice like "more lean protein".`
       : "",

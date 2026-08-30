@@ -48,7 +48,12 @@ export function TodayStrip() {
   // a big jump in the day's sugar or sodium (decoupled from the AI)
   const newestMeal = day?.meals?.[0];
   const dayTip = newestMeal
-    ? dayTipForMeal(newestMeal.id, newestMeal.nutrition, t)
+    ? dayTipForMeal(
+        newestMeal.id,
+        newestMeal.nutrition,
+        t,
+        totals ? { sugarG: totals.sugarG, sodiumMg: totals.sodiumMg } : undefined
+      )
     : null;
 
   return (
