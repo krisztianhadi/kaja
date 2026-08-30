@@ -18,6 +18,10 @@ export function SuggestionBlock({
   suggestion: Suggestion;
   className?: string;
 }) {
+  // only the AI's suggestion is shown; the repetitive rule-based message
+  // stays behind the scenes. Nothing renders when the AI had no extra.
+  if (!suggestion.aiExtra) return null;
+
   const tone =
     suggestion.level === "high"
       ? {
@@ -38,19 +42,7 @@ export function SuggestionBlock({
     <div className={cn("rounded-xl border p-3 text-sm", tone.bg, className)}>
       <div className="flex items-start gap-2">
         <span className="mt-0.5">{tone.icon}</span>
-        <div className="space-y-1">
-          <p>{suggestion.message}</p>
-          {suggestion.aiExtra && (
-            <p className="text-xs opacity-80">
-              AI suggestion: {suggestion.aiExtra}
-            </p>
-          )}
-          {suggestion.aiConfirmed === false && !suggestion.aiExtra && (
-            <p className="text-xs opacity-80">
-              AI reviewed the day differently - see dashboard totals.
-            </p>
-          )}
-        </div>
+        <p>{suggestion.aiExtra}</p>
       </div>
     </div>
   );

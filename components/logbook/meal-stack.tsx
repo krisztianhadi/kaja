@@ -76,10 +76,7 @@ export function MealStack({
 
   return (
     <>
-      <div
-        className="max-h-[45vh] space-y-2 overflow-y-auto pb-6 pr-1 [mask-image:linear-gradient(to_bottom,black_88%,transparent)]"
-        aria-label="Previously recorded meals"
-      >
+      <div className="space-y-2" aria-label="Previously recorded meals">
         {meals.map((meal) => (
           <div
             key={meal.id}
