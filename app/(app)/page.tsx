@@ -40,10 +40,13 @@ export default function LogbookPage() {
         </div>
       </div>
 
-      {/* record box pinned to the bottom of the viewport */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md">
-        <div className="mx-auto w-full max-w-2xl px-4 pt-3">
-          <MealForm onRecorded={() => {}} />
+      {/* record box pinned to the bottom: a floating card over a soft scrim */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 bg-gradient-to-t from-background/95 via-background/70 to-transparent px-4 pt-10 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
+        <div className="pointer-events-auto mx-auto w-full max-w-2xl">
+          <MealForm
+            onRecorded={() => {}}
+            className="shadow-lifted"
+          />
         </div>
       </div>
     </>

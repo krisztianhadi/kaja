@@ -25,8 +25,10 @@ interface RecordResponse {
 
 export function MealForm({
   onRecorded,
+  className,
 }: {
   onRecorded: (meal: MealDto) => void;
+  className?: string;
 }) {
   const user = useUser();
   const queryClient = useQueryClient();
@@ -126,7 +128,7 @@ export function MealForm({
 
   return (
     <div className="space-y-3">
-      <Card>
+      <Card className={className}>
         <CardContent className="space-y-3 pt-4">
           <form onSubmit={submit}>
             <div className="flex items-center gap-2">
