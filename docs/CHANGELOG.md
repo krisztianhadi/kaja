@@ -103,4 +103,7 @@
   percentage is shown (no "of budget" suffix - "Today's budget" is already
   written above).
 - [Fix] The Record button uses the fork-and-knife icon from the logo.
+- [Fix] The delete action in the detail dialog opens a separate
+  confirmation modal again, sits above the Close / Log again pair, and the
+  action buttons got icons (trash, x, re-record).
 
