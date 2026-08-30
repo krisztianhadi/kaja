@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles } from "lucide-react";
+import { LogOut, Sparkles } from "lucide-react";
 import { api } from "@/lib/api";
 import { useUser } from "@/components/user-context";
+import { useTheme, type ThemeMode } from "@/components/theme";
 import { bmiCategory, computeBmi, recommendedTargets } from "@/lib/body";
-import { Button, Card, CardContent, Input, Label, Textarea } from "@/components/ui";
+import { Button, Card, CardContent, Input, Label, Segmented, Textarea } from "@/components/ui";
 
 function NumberField({
   label,
@@ -38,6 +39,7 @@ function NumberField({
 export function SettingsForm() {
   const user = useUser();
   const router = useRouter();
+  const { mode, setMode } = useTheme();
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -63,6 +65,7 @@ export function SettingsForm() {
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [signingOut, setSigningOut] = useState(false);
 
   const h = heightCm.trim() === "" ? null : Number(heightCm);
   const w = weightKg.trim() === "" ? null : Number(weightKg);
@@ -144,6 +147,17 @@ export function SettingsForm() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function signOut() {
+    setSigningOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // still navigate away
+    }
+    router.push("/login");
+    router.refresh();
   }
 
   return (
@@ -308,6 +322,24 @@ export function SettingsForm() {
 
       <Card>
         <CardContent className="space-y-3 pt-4">
+          <h2 className="text-sm font-semibold">Appearance</h2>
+          <Segmented<ThemeMode>
+            value={mode}
+            onChange={setMode}
+            options={[
+              { value: "system", label: "System" },
+              { value: "light", label: "Light" },
+              { value: "dark", label: "Dark" },
+            ]}
+          />
+          <p className="text-xs text-muted-foreground">
+            Follows your device setting by default.
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="space-y-3 pt-4">
           <h2 className="text-sm font-semibold">Password</h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="space-y-1.5">
@@ -347,6 +379,16 @@ export function SettingsForm() {
       )}
       <Button type="submit" disabled={busy}>
         {busy ? "Saving..." : "Save settings"}
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={signOut}
+        disabled={signingOut}
+        className="w-full border-destructive/40 text-destructive hover:bg-destructive/10"
+      >
+        <LogOut className="h-4 w-4" />
+        {signingOut ? "Signing out..." : "Sign out"}
       </Button>
     </form>
   );

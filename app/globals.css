@@ -40,6 +40,36 @@
     background-attachment: fixed;
   }
 
+  .dark {
+    --background: 25 20% 8%;
+    --foreground: 40 20% 92%;
+    --card: 25 18% 11%;
+    --card-foreground: 40 20% 92%;
+    --popover: 25 18% 11%;
+    --popover-foreground: 40 20% 92%;
+    --primary: 152 45% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 25 15% 16%;
+    --secondary-foreground: 40 15% 85%;
+    --muted: 25 15% 16%;
+    --muted-foreground: 40 10% 62%;
+    --accent: 25 15% 18%;
+    --accent-foreground: 40 15% 88%;
+    --destructive: 0 62% 58%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 25 12% 20%;
+    --input: 25 12% 20%;
+    --ring: 152 45% 45%;
+  }
+
+  .dark body {
+    background-image: linear-gradient(
+      180deg,
+      hsl(var(--background)) 0%,
+      hsl(25 30% 5%) 100%
+    );
+  }
+
   /* disable double-tap zoom on controls (mobile) */
   button,
   input,

@@ -28,4 +28,13 @@
   pill-style navigation on desktop, larger touch targets, rounded-2xl cards
   with soft shadows, gradient-tinted background, bottom-sheet confirmation,
   cleaner login screen.
+- [Feature] Clicking a history meal opens a detail view with the original
+  photo, the nutrition datasheet and the recorded feedback/suggestion, and
+  Log again + Close buttons (re-record now happens from there).
+- [Feature] Light/dark theme switch in Settings (System / Light / Dark).
+  Follows the device setting by default, override is remembered per device.
+- [Feature] Sign out moved from the header into Settings.
+- [Fix] Progress bars: removed conflicting height classes; bars were only
+  invisible because they were at 0% on an empty day - an empty day now
+  shows a hint instead of silent gray tracks.
 

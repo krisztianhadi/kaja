@@ -58,7 +58,7 @@ export function TodayStrip() {
                   {m.unit} ({p}%)
                 </span>
               </div>
-              <Progress value={p} className="mt-1 h-1.5" barClassName={severityClass(p)} />
+              <Progress value={p} className="mt-1" barClassName={severityClass(p)} />
             </div>
           );
         })}

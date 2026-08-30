@@ -9,7 +9,7 @@ function formatNumber(n: number): string {
   return Number.isFinite(n) ? String(Math.round(n * 10) / 10) : "-";
 }
 
-function SuggestionBlock({
+export function SuggestionBlock({
   suggestion,
   className,
 }: {
@@ -18,13 +18,22 @@ function SuggestionBlock({
 }) {
   const tone =
     suggestion.level === "high"
-      ? { bg: "bg-amber-50 border-amber-200 text-amber-900", icon: <TriangleAlert className="h-4 w-4 shrink-0 text-amber-600" /> }
+      ? {
+          bg: "bg-amber-50 border-amber-200 text-amber-900 dark:bg-amber-950/40 dark:border-amber-900/40 dark:text-amber-200",
+          icon: <TriangleAlert className="h-4 w-4 shrink-0 text-amber-600" />,
+        }
       : suggestion.level === "watch"
-        ? { bg: "bg-amber-50/60 border-amber-200 text-amber-900", icon: <Info className="h-4 w-4 shrink-0 text-amber-600" /> }
-        : { bg: "bg-emerald-50 border-emerald-200 text-emerald-900", icon: <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" /> };
+        ? {
+            bg: "bg-amber-50/60 border-amber-200 text-amber-900 dark:bg-amber-950/30 dark:border-amber-900/40 dark:text-amber-200",
+            icon: <Info className="h-4 w-4 shrink-0 text-amber-600" />,
+          }
+        : {
+            bg: "bg-emerald-50 border-emerald-200 text-emerald-900 dark:bg-emerald-950/40 dark:border-emerald-900/40 dark:text-emerald-200",
+            icon: <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />,
+          };
 
   return (
-    <div className={cn("rounded-md border p-3 text-sm", tone.bg, className)}>
+    <div className={cn("rounded-xl border p-3 text-sm", tone.bg, className)}>
       <div className="flex items-start gap-2">
         <span className="mt-0.5">{tone.icon}</span>
         <div className="space-y-1">
@@ -35,7 +44,9 @@ function SuggestionBlock({
             </p>
           )}
           {suggestion.aiConfirmed === false && !suggestion.aiExtra && (
-            <p className="text-xs opacity-80">AI reviewed the day differently - see dashboard totals.</p>
+            <p className="text-xs opacity-80">
+              AI reviewed the day differently - see dashboard totals.
+            </p>
           )}
         </div>
       </div>
@@ -43,7 +54,7 @@ function SuggestionBlock({
   );
 }
 
-function NutritionGrid({ nutrition }: { nutrition: Nutrition }) {
+export function NutritionGrid({ nutrition }: { nutrition: Nutrition }) {
   const cells = [
     { label: "kcal", value: `${formatNumber(nutrition.kcal)}` },
     { label: "protein", value: `${formatNumber(nutrition.proteinG)} g` },
@@ -57,7 +68,7 @@ function NutritionGrid({ nutrition }: { nutrition: Nutrition }) {
       {cells.map((c) => (
         <div
           key={c.label}
-          className="rounded-md bg-secondary/60 px-2 py-1.5 text-center"
+          className="rounded-xl bg-secondary/60 px-2 py-1.5 text-center"
         >
           <div className="text-sm font-medium">{c.value}</div>
           <div className="text-[11px] uppercase tracking-wide text-muted-foreground">
@@ -83,10 +94,7 @@ export function MealResult({
     suggestion: Suggestion;
   };
 }) {
-  const title =
-    data.meal.mealName ||
-    data.meal.portion ||
-    "Recorded meal";
+  const title = data.meal.mealName || data.meal.portion || "Recorded meal";
   return (
     <Card className="border-primary/30">
       <CardContent className="space-y-3 pt-4">

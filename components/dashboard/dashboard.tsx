@@ -92,7 +92,7 @@ function MacroBar({ label, value, target, unit, showPct }: {
       </div>
       <Progress
         value={showPct ? p : 0}
-        className="mt-1 h-1.5"
+        className="mt-1"
         barClassName={severityClass(p)}
       />
     </div>
@@ -214,6 +214,11 @@ function DailyView({
           </div>
           {showPct && (
             <Progress value={kcalPct} barClassName={severityClass(kcalPct)} />
+          )}
+          {totals.meals === 0 && (
+            <p className="text-xs text-muted-foreground">
+              No meals recorded this day - the bars fill up as you log.
+            </p>
           )}
           <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             <MacroBar label="protein" value={totals.proteinG} target={t.proteinG} unit="g" showPct={showPct} />

@@ -40,7 +40,7 @@ export function ForgotBanner() {
   if (loggedToday || hour < 18) return null;
 
   return (
-    <Card className="mb-4 border-amber-200 bg-amber-50 text-amber-900">
+    <Card className="mb-4 border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-200">
       <CardContent className="flex items-center justify-between gap-3 py-2.5">
         <p className="text-sm">
           Nothing logged today yet - want to record your meal?
@@ -55,7 +55,7 @@ export function ForgotBanner() {
             }
             setDismissed(true);
           }}
-          className="shrink-0 rounded bg-amber-100 px-2 py-1 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-200"
+          className="shrink-0 rounded bg-amber-100 px-2 py-1 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-200 dark:bg-amber-900/50 dark:text-amber-200 dark:hover:bg-amber-900/70"
         >
           Dismiss
         </button>

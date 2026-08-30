@@ -9,10 +9,11 @@ import { cn } from "@/lib/cn";
 import type { MealDto } from "@/lib/types";
 import { Button, Card, CardContent } from "@/components/ui";
 import { mealIcon } from "./food-icon";
+import { NutritionGrid, SuggestionBlock } from "./meal-result";
 
 export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void }) {
   const queryClient = useQueryClient();
-  const [confirmMeal, setConfirmMeal] = useState<MealDto | null>(null);
+  const [selected, setSelected] = useState<MealDto | null>(null);
   const [flashId, setFlashId] = useState<string | null>(null);
 
   const { data, isPending } = useQuery({
@@ -27,7 +28,7 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
         { method: "POST" }
       ),
     onSuccess: (data) => {
-      setConfirmMeal(null);
+      setSelected(null);
       setFlashId(data.meal.id);
       setTimeout(() => setFlashId(null), 1500);
       onRecorded(data.meal);
@@ -50,10 +51,6 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
     );
   }
 
-  const confirmTitle = confirmMeal
-    ? confirmMeal.mealName || confirmMeal.description || confirmMeal.portion || "Meal"
-    : "";
-
   return (
     <>
       <div
@@ -71,7 +68,7 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
             <button
               key={meal.id}
               type="button"
-              onClick={() => setConfirmMeal(meal)}
+              onClick={() => setSelected(meal)}
               className={cn(
                 "block w-full rounded-2xl border bg-card text-left shadow-soft transition-colors hover:bg-accent/40",
                 flashId === meal.id && "ring-2 ring-primary"
@@ -82,10 +79,10 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
                   <img
                     src={meal.imageData}
                     alt=""
-                    className="h-11 w-11 shrink-0 rounded-md object-cover"
+                    className="h-11 w-11 shrink-0 rounded-xl object-cover"
                   />
                 ) : (
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-secondary text-muted-foreground">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-secondary text-muted-foreground">
                     <Icon className="h-5 w-5" />
                   </div>
                 )}
@@ -116,37 +113,61 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
         })}
       </div>
 
-      {confirmMeal && (
+      {selected && (
         <div
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center"
-          onClick={() => setConfirmMeal(null)}
+          onClick={() => setSelected(null)}
         >
           <Card
             className="w-full max-w-sm rounded-t-3xl shadow-lifted sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <CardContent className="space-y-3 pt-4">
-              <h3 className="font-medium">Record this again?</h3>
-              <p className="text-sm text-muted-foreground">
-                {confirmTitle} - {Math.round(confirmMeal.nutrition.kcal)} kcal
-                {confirmMeal.portion ? ` (${confirmMeal.portion})` : ""}
-                {confirmMeal.participantIds.length > 1
-                  ? ` - shared by ${confirmMeal.participantIds.length}`
-                  : ""}
-              </p>
-              <div className="flex justify-end gap-2">
+              {selected.imageData && (
+                <img
+                  src={selected.imageData}
+                  alt=""
+                  className="h-40 w-full rounded-xl object-cover"
+                />
+              )}
+              <div>
+                <h3 className="font-medium">
+                  {selected.mealName || selected.description || "Meal"}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {[
+                    selected.portion,
+                    selected.participantIds.length > 1
+                      ? `shared by ${selected.participantIds.length}`
+                      : "",
+                    formatDistanceToNow(new Date(selected.createdAt), {
+                      addSuffix: true,
+                    }),
+                    selected.source === "repeat"
+                      ? "re-recorded from cache"
+                      : `AI estimate (${selected.confidence} confidence)`,
+                  ]
+                    .filter(Boolean)
+                    .join(" - ")}
+                </p>
+              </div>
+              <NutritionGrid nutrition={selected.nutrition} />
+              {selected.suggestion && (
+                <SuggestionBlock suggestion={selected.suggestion} />
+              )}
+              <div className="flex justify-end gap-2 pt-1">
                 <Button
                   variant="outline"
-                  onClick={() => setConfirmMeal(null)}
+                  onClick={() => setSelected(null)}
                   disabled={repeat.isPending}
                 >
-                  Cancel
+                  Close
                 </Button>
                 <Button
-                  onClick={() => repeat.mutate(confirmMeal.id)}
+                  onClick={() => repeat.mutate(selected.id)}
                   disabled={repeat.isPending}
                 >
-                  {repeat.isPending ? "Recording..." : "Record again"}
+                  {repeat.isPending ? "Recording..." : "Log again"}
                 </Button>
               </div>
             </CardContent>

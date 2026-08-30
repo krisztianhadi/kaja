@@ -1,17 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   BarChart3,
   BookOpen,
-  LogOut,
   Settings as SettingsIcon,
   UtensilsCrossed,
 } from "lucide-react";
 import { useUser } from "@/components/user-context";
-import { Button } from "@/components/ui";
 import { cn } from "@/lib/cn";
 
 const TABS = [
@@ -22,20 +19,7 @@ const TABS = [
 
 export function Nav() {
   const user = useUser();
-  const router = useRouter();
   const pathname = usePathname();
-  const [signingOut, setSigningOut] = useState(false);
-
-  async function signOut() {
-    setSigningOut(true);
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch {
-      // still navigate away
-    }
-    router.push("/login");
-    router.refresh();
-  }
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -46,7 +30,7 @@ export function Nav() {
         <div className="mx-auto flex h-14 w-full max-w-2xl items-center gap-3 px-4">
           <Link href="/" className="flex items-center gap-2 font-semibold">
             <UtensilsCrossed className="h-5 w-5 text-primary" />
-            <span className="hidden sm:inline">Kaja</span>
+            <span>Kaja</span>
           </Link>
           <div className="ml-auto flex items-center gap-2">
             {user && (
@@ -54,16 +38,6 @@ export function Nav() {
                 {user.username}
               </span>
             )}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={signOut}
-              disabled={signingOut}
-              title="Sign out"
-              aria-label="Sign out"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </header>
