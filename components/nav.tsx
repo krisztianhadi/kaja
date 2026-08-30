@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   BarChart3,
   BookOpen,
@@ -31,6 +31,32 @@ export function Nav() {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuBtnRef = useRef<HTMLButtonElement>(null);
+  // viewport coords for the fixed dropdown so it anchors to the hamburger
+  // icon (which is mid-screen on desktop, not at the viewport corner)
+  const [menuPos, setMenuPos] = useState<{ top: number; right: number } | null>(
+    null
+  );
+
+  const toggleMenu = useCallback(() => {
+    setMenuOpen((open) => {
+      if (open) return false;
+      const el = menuBtnRef.current;
+      if (el) {
+        const r = el.getBoundingClientRect();
+        setMenuPos({ top: r.bottom + 8, right: window.innerWidth - r.right });
+      }
+      return true;
+    });
+  }, []);
+
+  // close on resize - the fixed menu would detach from the icon otherwise
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onResize = () => setMenuOpen(false);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [menuOpen]);
 
   // Escape closes the menu
   useEffect(() => {
@@ -73,9 +99,10 @@ export function Nav() {
         </Link>
         <div className="ml-auto flex items-center gap-2">
           <Button
+            ref={menuBtnRef}
             variant="ghost"
             size="icon"
-            onClick={() => setMenuOpen((o) => !o)}
+            onClick={toggleMenu}
             aria-label="Open menu"
             aria-expanded={menuOpen}
           >
@@ -95,7 +122,8 @@ export function Nav() {
         />
         <nav
           role="menu"
-          className="fixed right-4 top-[3.875rem] z-[45] w-60 rounded-2xl border bg-card p-2 shadow-lifted"
+          style={menuPos ?? undefined}
+          className="fixed z-[45] w-60 rounded-2xl border bg-card p-2 shadow-lifted"
         >
               {/* user */}
               {user && (
