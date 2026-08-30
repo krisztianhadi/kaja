@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { api, tzOffsetMinutes } from "@/lib/api";
@@ -125,9 +126,10 @@ export function MealStack({
 
       <Link
         href="/dashboard"
-        className="flex items-center justify-center gap-2 rounded-full border border-input bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-accent"
+        className="mt-3 flex items-center justify-center gap-1 rounded-full px-4 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
       >
         View full history
+        <ChevronRight className="h-4 w-4" />
       </Link>
 
       {selected && (
