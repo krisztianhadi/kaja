@@ -104,11 +104,11 @@ export function MealDetailDialog({
 
       {confirmOpen && (
         <div
-          className="fixed inset-0 z-[51] flex items-center justify-center bg-black/40 p-4"
+          className="fixed inset-0 z-[51] flex items-end justify-center bg-black/40 p-4 sm:items-center"
           onClick={() => setConfirmOpen(false)}
         >
           <Card
-            className="w-full max-w-sm rounded-2xl shadow-lifted"
+            className="w-full max-w-sm rounded-t-3xl shadow-lifted sm:rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <CardContent className="space-y-3 pt-4">
@@ -123,6 +123,7 @@ export function MealDetailDialog({
                   onClick={() => setConfirmOpen(false)}
                   disabled={deleting}
                 >
+                  <X className="h-4 w-4" />
                   Cancel
                 </Button>
                 <Button
@@ -130,6 +131,7 @@ export function MealDetailDialog({
                   onClick={onDelete}
                   disabled={deleting}
                 >
+                  <Trash2 className="h-4 w-4" />
                   {deleting ? "Deleting..." : "Delete"}
                 </Button>
               </div>
