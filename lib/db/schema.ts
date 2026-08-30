@@ -6,6 +6,7 @@ import {
   jsonb,
   doublePrecision,
   integer,
+  boolean,
   primaryKey,
 } from "drizzle-orm/pg-core";
 
@@ -37,6 +38,8 @@ export const users = pgTable("users", {
   gender: text("gender"), // male | female
   activity: text("activity").notNull().default("sedentary"), // sedentary|light|moderate|active|extra
   goal: text("goal").notNull().default("maintain"), // maintain|lose|gain
+  // exact numbers (g/kcal/mg) on the main screen; false = percentages only
+  scientific: boolean("scientific").notNull().default(false),
   // null = use server GEMINI_TOKEN
   geminiApiKey: text("gemini_api_key"),
   createdAt: timestamp("created_at", { withTimezone: true })

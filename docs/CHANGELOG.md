@@ -54,4 +54,16 @@
   -250). A manual calorie goal in Settings disables auto-calculation until
   toggled back. The main screen shows "Today's budget" with an override
   note. The budget feeds the intake percentages and the AI context.
+- [Feature] "How is your day" box above the budget: one-tap activity
+  override, labeled Lazy / Average / Active (was Usual / +250 / -250).
+- [Feature] Scientific view toggle in Settings (default off): off = the
+  main screen shows only percentages of the daily budget; on = exact
+  numbers (g, kcal, mg) appear.
+- [Feature] Meal cards are tinted by severity (light color wash, no solid
+  fill): balanced (green), light (blue), heavy (amber), trashfood (red),
+  classified from the meal's sugar/sodium/fat/kcal.
+- [Feature] Password change moved to a modal (current password + new
+  password typed twice, classic pattern).
+- [Feature] Toast notifications for settings save success/errors instead
+  of inline text.
 

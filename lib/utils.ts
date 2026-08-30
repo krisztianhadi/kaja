@@ -30,6 +30,7 @@ export function userDto(user: User) {
     activity: (user.activity ?? "sedentary") as ActivityLevel,
     goal: (user.goal ?? "maintain") as Goal,
     manualKcal: user.manualKcal,
+    scientific: user.scientific,
     targetProteinG: user.targetProteinG,
     targetFatG: user.targetFatG,
     targetCarbsG: user.targetCarbsG,

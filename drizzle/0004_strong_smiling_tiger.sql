@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "scientific" boolean DEFAULT false NOT NULL;

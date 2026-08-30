@@ -7,12 +7,21 @@ import { formatDistanceToNow } from "date-fns";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import type { MealDto } from "@/lib/types";
+import { classifyMeal, MEAL_CLASS_TINTS } from "@/lib/meal-class";
 import { Button, Card, CardContent } from "@/components/ui";
 import { mealIcon } from "./food-icon";
 import { NutritionGrid, SuggestionBlock } from "./meal-result";
 import { ReanalyzeButton } from "./reanalyze-button";
 
-export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void }) {
+export function MealStack({
+  onRecorded,
+  budgetKcal,
+  scientific,
+}: {
+  onRecorded: (meal: MealDto) => void;
+  budgetKcal: number;
+  scientific: boolean;
+}) {
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<MealDto | null>(null);
   const [flashId, setFlashId] = useState<string | null>(null);
@@ -65,13 +74,17 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
             addSuffix: true,
           });
           const Icon = mealIcon(meal.mealName + " " + meal.description);
+          const mealClass = classifyMeal(meal.nutrition);
+          const dayPct =
+            budgetKcal > 0 ? Math.round((meal.nutrition.kcal / budgetKcal) * 100) : 0;
           return (
             <button
               key={meal.id}
               type="button"
               onClick={() => setSelected(meal)}
               className={cn(
-                "block w-full rounded-2xl border bg-card text-left shadow-soft transition-colors hover:bg-accent/40",
+                "block w-full rounded-2xl border shadow-soft transition-colors hover:brightness-[0.98]",
+                MEAL_CLASS_TINTS[mealClass],
                 flashId === meal.id && "ring-2 ring-primary"
               )}
             >
@@ -98,15 +111,23 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
                   </div>
                 </div>
                 <div className="shrink-0 text-right">
-                  <div className="text-sm font-semibold">
-                    {Math.round(meal.nutrition.kcal)} kcal
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    P {Math.round(meal.nutrition.proteinG)}g
-                    {meal.nutrition.sugarG > 0
-                      ? ` - S ${Math.round(meal.nutrition.sugarG)}g`
-                      : ""}
-                  </div>
+                  {scientific ? (
+                    <>
+                      <div className="text-sm font-semibold">
+                        {Math.round(meal.nutrition.kcal)} kcal
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        P {Math.round(meal.nutrition.proteinG)}g
+                        {meal.nutrition.sugarG > 0
+                          ? ` - S ${Math.round(meal.nutrition.sugarG)}g`
+                          : ""}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-sm font-semibold">
+                      {dayPct}% of day
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </button>

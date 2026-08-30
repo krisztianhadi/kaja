@@ -29,6 +29,13 @@
       "when": 1788062634799,
       "tag": "0003_damp_firelord",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788063569898,
+      "tag": "0004_strong_smiling_tiger",
+      "breakpoints": true
     }
   ]
 }
