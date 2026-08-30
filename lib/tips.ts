@@ -14,6 +14,7 @@ const SUGAR_TIPS = [
   "Big sugar spike - protein or healthy fats now (eggs, chicken, nuts) keep your energy steadier than more carbs.",
   "Sweet hit - drink water and take a short walk to smooth out the spike.",
   "Sugar-heavy meal - next time pair the sweet with protein or fat; it slows the sugar rush.",
+  "That was a sweet one - some protein now (egg, chicken, tofu) will keep you from crashing later.",
 ];
 
 const SODIUM_TIPS = [
@@ -21,6 +22,7 @@ const SODIUM_TIPS = [
   "High sodium - balance it with potassium: banana, coconut water, or leafy greens.",
   "Salty - keep sipping water through the day; a banana or avocado helps your system handle it.",
   "Big sodium hit - extra water plus a potassium snack (banana, papaya) makes it easier.",
+  "Salty plate - your body needs water to deal with it; keep a bottle nearby today.",
 ];
 
 // the day is already past the target: no more food suggestions, only stop/lighten
@@ -28,12 +30,16 @@ const SUGAR_OVER_TIPS = [
   "You are past your sugar target for today - skip anything sweet for the rest of the day.",
   "Sugar done for today - water and a short walk beat any snack right now.",
   "Past the sugar budget - if you feel a craving, it passes faster with a glass of water.",
+  "Sugar quota is spent - anything else sweet can wait until tomorrow.",
+  "You had enough sugar for today - the next thing you drink should be plain water.",
 ];
 
 const SODIUM_OVER_TIPS = [
   "You are past your sodium target - keep drinking water and go easy on salt from here.",
   "Sodium done for today - water, water, water; no need for more salty food.",
   "Past the sodium budget - light, fresh food only for the rest of the day.",
+  "Sodium quota is spent - fresh fruit or plain rice beats anything pickled or fried now.",
+  "Enough salt for today - keep the water flowing and let tomorrow be fresh.",
 ];
 
 // the day is over calories: the strongest signal - stop eating, full stop
@@ -42,6 +48,7 @@ const STOP_OVER_TIPS = [
   "The day budget is done - put the fork down, the log will still work.",
   "Over budget for today - stop eating and let your body catch up.",
   "Enough for today - close the logbook and have some water instead.",
+  "Today is full - nothing more to add, and that is perfectly okay.",
 ];
 
 /** Threshold: a meal counts as a "big jump" when it carries this much of the day's target. */
