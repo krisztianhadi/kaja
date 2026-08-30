@@ -1,16 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   BarChart3,
   BookOpen,
+  LogOut,
   Menu,
+  Moon,
   Settings as SettingsIcon,
+  Sun,
+  UserRound,
   UtensilsCrossed,
 } from "lucide-react";
 import { useUser } from "@/components/user-context";
+import { useTheme } from "@/components/theme";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
@@ -22,11 +27,31 @@ const TABS = [
 
 export function Nav() {
   const user = useUser();
+  const { mode, setMode } = useTheme();
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  const isDark =
+    mode === "dark" ||
+    (mode === "system" &&
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+  async function signOut() {
+    setSigningOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // still navigate away
+    }
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-md">
@@ -36,11 +61,6 @@ export function Nav() {
           <span>Kaja</span>
         </Link>
         <div className="ml-auto flex items-center gap-2">
-          {user && (
-            <span className="hidden text-sm text-muted-foreground sm:inline">
-              {user.username}
-            </span>
-          )}
           <Button
             variant="ghost"
             size="icon"
@@ -59,28 +79,87 @@ export function Nav() {
               className="fixed inset-0 z-40"
               onClick={() => setMenuOpen(false)}
             />
-            {/* dropdown under the hamburger, like Ghosted */}
             <nav
               role="menu"
-              className="absolute right-4 top-full z-40 mt-1 w-48 rounded-2xl border bg-card p-1 shadow-lifted"
+              className="absolute right-4 top-full z-40 mt-1.5 w-60 rounded-2xl border bg-card p-2 shadow-lifted"
             >
-              {TABS.map((tab) => (
-                <Link
-                  key={tab.href}
-                  role="menuitem"
-                  href={tab.href}
-                  onClick={() => setMenuOpen(false)}
+              {/* user */}
+              {user && (
+                <div className="flex items-center gap-2.5 px-3 pb-2.5 pt-1.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground">
+                    <UserRound className="h-4 w-4" />
+                  </span>
+                  <span className="truncate text-sm font-medium">
+                    {user.username}
+                  </span>
+                </div>
+              )}
+
+              {/* nav links */}
+              <div className="space-y-0.5">
+                {TABS.map((tab) => (
+                  <Link
+                    key={tab.href}
+                    role="menuitem"
+                    href={tab.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={cn(
+                      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                      isActive(tab.href)
+                        ? "bg-accent text-foreground"
+                        : "text-foreground hover:bg-accent"
+                    )}
+                  >
+                    <tab.icon className="h-4 w-4 text-primary" />
+                    {tab.label}
+                  </Link>
+                ))}
+              </div>
+
+              <div className="my-1.5 h-px bg-border" />
+
+              {/* night mode */}
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => setMode(isDark ? "light" : "dark")}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
+              >
+                {isDark ? (
+                  <Sun className="h-4 w-4 text-primary" />
+                ) : (
+                  <Moon className="h-4 w-4 text-primary" />
+                )}
+                Night mode
+                <span
                   className={cn(
-                    "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
-                    isActive(tab.href)
-                      ? "bg-accent text-foreground"
-                      : "text-foreground hover:bg-accent"
+                    "ml-auto relative h-5 w-9 shrink-0 rounded-full transition-colors",
+                    isDark ? "bg-primary" : "bg-secondary"
                   )}
+                  aria-hidden
                 >
-                  <tab.icon className="h-4 w-4 text-primary" />
-                  {tab.label}
-                </Link>
-              ))}
+                  <span
+                    className={cn(
+                      "absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform",
+                      isDark && "translate-x-4"
+                    )}
+                  />
+                </span>
+              </button>
+
+              <div className="my-1.5 h-px bg-border" />
+
+              {/* log out */}
+              <button
+                type="button"
+                role="menuitem"
+                onClick={signOut}
+                disabled={signingOut}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+              >
+                <LogOut className="h-4 w-4" />
+                {signingOut ? "Signing out..." : "Sign out"}
+              </button>
             </nav>
           </>
         )}

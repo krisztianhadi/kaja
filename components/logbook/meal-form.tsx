@@ -40,6 +40,7 @@ export function MealForm({
   const [showShared, setShowShared] = useState(false);
   const [busy, setBusy] = useState(false);
   const [dismissing, setDismissing] = useState(false);
+  const [focused, setFocused] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [last, setLast] = useState<RecordResponse | null>(null);
   const { toast } = useToast();
@@ -131,14 +132,20 @@ export function MealForm({
       <Card className={className}>
         <CardContent className="space-y-3 pt-4">
           <form onSubmit={submit}>
-            <div className="flex items-center gap-2">
+            {/* the photo button lives inside the input's right corner so
+                the box can grow without moving it around */}
+            <div className="relative">
               <Input
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() =>
+                  setTimeout(() => setFocused(false), 150)
+                }
                 placeholder="What did you eat? (photo also works)"
                 aria-label="Food description"
                 disabled={busy}
-                className="flex-1"
+                className="pr-12"
               />
               <input
                 ref={fileInputRef}
@@ -155,7 +162,7 @@ export function MealForm({
                 title="Add a photo"
                 aria-label="Add a photo"
                 disabled={busy}
-                className="rounded-xl"
+                className="absolute right-1.5 top-1/2 h-9 w-9 -translate-y-1/2 rounded-xl"
               >
                 <ImagePlus className="h-5 w-5" />
               </Button>
@@ -179,48 +186,53 @@ export function MealForm({
               </div>
             )}
 
-            {others.length > 0 ? (
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowShared((s) => !s)}
-                  className="w-full"
-                >
-                  <Users className="h-4 w-4" />
-                  Shared
-                  {participants.length > 0 && (
-                    <span className="rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">
-                      {participants.length}
-                    </span>
-                  )}
-                </Button>
-                <Button type="submit" disabled={!canSubmit} className="w-full">
-                  {busy ? (
-                    "Estimating..."
-                  ) : (
-                    <>
-                      <UtensilsCrossed className="h-4 w-4" />
-                      Record
-                    </>
-                  )}
-                </Button>
+            {/* action row appears when the field is active or there is
+                content; the Record button only shows once there is
+                something to record */}
+            {(focused || canSubmit) && (
+              <div className="mt-3 animate-sheet-in-bottom">
+                {others.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowShared((s) => !s)}
+                      className="w-full"
+                    >
+                      <Users className="h-4 w-4" />
+                      Shared
+                      {participants.length > 0 && (
+                        <span className="rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">
+                          {participants.length}
+                        </span>
+                      )}
+                    </Button>
+                    {canSubmit && (
+                      <Button type="submit" className="w-full">
+                        {busy ? (
+                          "Estimating..."
+                        ) : (
+                          <>
+                            <UtensilsCrossed className="h-4 w-4" />
+                            Record
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                ) : canSubmit ? (
+                  <Button type="submit" className="w-full">
+                    {busy ? (
+                      "Estimating..."
+                    ) : (
+                      <>
+                        <UtensilsCrossed className="h-4 w-4" />
+                        Record
+                      </>
+                    )}
+                  </Button>
+                ) : null}
               </div>
-            ) : (
-              <Button
-                type="submit"
-                disabled={!canSubmit}
-                className="mt-3 w-full"
-              >
-                {busy ? (
-                  "Estimating..."
-                ) : (
-                  <>
-                    <UtensilsCrossed className="h-4 w-4" />
-                    Record
-                  </>
-                )}
-              </Button>
             )}
 
             {showShared && (
