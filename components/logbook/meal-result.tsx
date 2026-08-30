@@ -3,7 +3,9 @@
 import { CheckCircle2, Info, TriangleAlert } from "lucide-react";
 import { cn } from "@/lib/cn";
 import type { Nutrition, Suggestion } from "@/lib/db/schema";
+import type { MealDto } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui";
+import { ReanalyzeButton } from "./reanalyze-button";
 
 function formatNumber(n: number): string {
   return Number.isFinite(n) ? String(Math.round(n * 10) / 10) : "-";
@@ -80,19 +82,17 @@ export function NutritionGrid({ nutrition }: { nutrition: Nutrition }) {
   );
 }
 
+type ResultMeal = MealDto;
+
 export function MealResult({
   data,
+  onUpdated,
 }: {
   data: {
-    meal: {
-      mealName: string;
-      portion: string;
-      confidence: string;
-      source: string;
-      nutrition: Nutrition;
-    };
+    meal: ResultMeal;
     suggestion: Suggestion;
   };
+  onUpdated?: (meal: ResultMeal) => void;
 }) {
   const title = data.meal.mealName || data.meal.portion || "Recorded meal";
   return (
@@ -107,11 +107,18 @@ export function MealResult({
               {data.meal.source === "repeat"
                 ? "re-recorded from cache, no AI"
                 : `AI estimate (${data.meal.confidence} confidence)`}
+              {data.meal.model ? ` - ${data.meal.model}` : ""}
             </p>
           </div>
         </div>
         <NutritionGrid nutrition={data.meal.nutrition} />
         <SuggestionBlock suggestion={data.suggestion} />
+        {data.meal.confidence !== "high" && data.meal.id && (
+          <ReanalyzeButton
+            mealId={data.meal.id}
+            onDone={(m) => onUpdated?.(m)}
+          />
+        )}
       </CardContent>
     </Card>
   );

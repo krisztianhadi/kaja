@@ -59,6 +59,8 @@ export const meals = pgTable("meals", {
   portion: text("portion").notNull().default(""),
   confidence: text("confidence").notNull().default("low"), // high|medium|low
   source: text("source").notNull().default("ai"), // ai | repeat
+  // model that produced this estimate (null for imported/demo data)
+  model: text("model"),
   // { level, name, message, aiExtra, aiConfirmed }
   suggestion: jsonb("suggestion").$type<Suggestion | null>(),
   createdAt: timestamp("created_at", { withTimezone: true })

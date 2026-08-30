@@ -49,6 +49,12 @@ Relative time words in the description backdate the meal:
 Errors: 400 (invalid input), 503 (no Gemini key configured), 502 (analysis
 failed).
 
+### `POST /api/meals/[id]/reanalyze`
+Re-runs the estimate with the stronger Gemini model
+(`GEMINI_MODEL_BETTER`, default `gemini-3.6-flash`) and updates the meal in
+place. Returns `{ meal, dayTotals, model }` where `dayTotals` covers the
+meal's own day (it may be backdated).
+
 ### `POST /api/meals/[id]/repeat`
 Re-records a previous meal from stored data - no AI call. Returns
 `{ meal, totals }`.

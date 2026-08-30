@@ -42,6 +42,7 @@ export function mealToDto(meal: Meal): MealDto {
     portion: meal.portion,
     confidence: meal.confidence,
     source: meal.source,
+    model: meal.model,
     nutrition: {
       kcal: meal.kcal,
       proteinG: meal.proteinG,

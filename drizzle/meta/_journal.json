@@ -15,6 +15,13 @@
       "when": 1788019881906,
       "tag": "0001_smart_black_bolt",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788061755291,
+      "tag": "0002_overrated_mantis",
+      "breakpoints": true
     }
   ]
 }

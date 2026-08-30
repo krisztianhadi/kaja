@@ -123,7 +123,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const estimate = await analyzeMeal({
+    const result = await analyzeMeal({
       description: clean,
       imageDataUri: imageDataUri || null,
       apiKey,
@@ -132,6 +132,7 @@ export async function POST(request: Request) {
       dayTotalsText: totalsToText(totalsBefore, targets),
       ruleSuggestionText: rule.message,
     });
+    const estimate = result.estimate;
 
     const suggestion: Suggestion = {
       level: rule.level,
@@ -159,6 +160,7 @@ export async function POST(request: Request) {
         confidence: estimate.confidence,
         source: "ai",
         suggestion,
+        model: result.model,
         ...(createdAt ? { createdAt } : {}),
       },
       user.id,

@@ -10,6 +10,7 @@ import type { MealDto } from "@/lib/types";
 import { Button, Card, CardContent } from "@/components/ui";
 import { mealIcon } from "./food-icon";
 import { NutritionGrid, SuggestionBlock } from "./meal-result";
+import { ReanalyzeButton } from "./reanalyze-button";
 
 export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void }) {
   const queryClient = useQueryClient();
@@ -146,6 +147,7 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
                     selected.source === "repeat"
                       ? "re-recorded from cache"
                       : `AI estimate (${selected.confidence} confidence)`,
+                    selected.model ?? "",
                   ]
                     .filter(Boolean)
                     .join(" - ")}
@@ -154,6 +156,12 @@ export function MealStack({ onRecorded }: { onRecorded: (meal: MealDto) => void 
               <NutritionGrid nutrition={selected.nutrition} />
               {selected.suggestion && (
                 <SuggestionBlock suggestion={selected.suggestion} />
+              )}
+              {selected.confidence !== "high" && (
+                <ReanalyzeButton
+                  mealId={selected.id}
+                  onDone={(m) => setSelected(m)}
+                />
               )}
               <div className="flex justify-end gap-2 pt-1">
                 <Button

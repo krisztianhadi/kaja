@@ -47,6 +47,7 @@ export async function POST(
         confidence: original.confidence,
         source: "repeat",
         suggestion: original.suggestion,
+        model: original.model,
       },
       user.id,
       tzOffsetMin

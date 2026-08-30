@@ -217,7 +217,14 @@ export function MealForm({
         </CardContent>
       </Card>
 
-      {last && <MealResult data={last} />}
+      {last && (
+        <MealResult
+          data={last}
+          onUpdated={(meal) =>
+            setLast((prev) => (prev ? { ...prev, meal } : prev))
+          }
+        />
+      )}
     </div>
   );
 }

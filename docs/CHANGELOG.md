@@ -37,4 +37,13 @@
 - [Fix] Progress bars: removed conflicting height classes; bars were only
   invisible because they were at 0% on an empty day - an empty day now
   shows a hint instead of silent gray tracks.
+- [Feature] "Analyze again" on any estimate that is not high-confidence
+  (fresh result card and meal detail view): re-runs the analysis with a
+  stronger model (`gemini-3.6-flash`; pro-tier models are quota-blocked on
+  the free tier). The meal is updated in place and the model used is shown.
+- [Feature] OpenRouter fallback: when Gemini is unavailable (quota exceeded,
+  429, outage) and `OPENROUTER_TOKEN` is set, analysis automatically falls
+  back to OpenRouter (`openai/gpt-4o-mini` by default) so recording keeps
+  working. The model that actually produced the estimate is recorded on the
+  meal.
 

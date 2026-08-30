@@ -6,6 +6,13 @@ import { z } from "zod";
  */
 export const DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview";
 
+/**
+ * Stronger model used when the user asks to re-analyze a low/medium
+ * confidence estimate. gemini-3.1-pro-preview is quota-blocked on the
+ * free tier (429), so the best available flash is the escalation target.
+ */
+export const DEFAULT_BETTER_GEMINI_MODEL = "gemini-3.6-flash";
+
 export interface Nutrition {
   kcal: number;
   proteinG: number;
@@ -46,6 +53,8 @@ export interface AnalyzeInput {
   userContext: string;
   dayTotalsText: string;
   ruleSuggestionText: string;
+  /** true when this is a re-analysis of an existing estimate */
+  reanalysis?: boolean;
 }
 
 function buildPrompt(input: AnalyzeInput): string {
@@ -67,6 +76,10 @@ function buildPrompt(input: AnalyzeInput): string {
     "If a different or additional counter action would be more useful (considering the user's context), set confirmsRule to false and/or fill suggestion.extra with ONE short actionable suggestion.",
     "",
     `Food to estimate: ${desc}`,
+    "",
+    input.reanalysis
+      ? "This is a RE-ANALYSIS to improve a previous estimate. Be more careful and precise: state exactly what you are assuming and give the most plausible single estimate."
+      : "",
     "",
     "Respond ONLY with JSON in this exact shape:",
     '{ "mealName": string, "portion": string, "nutrition": { "kcal": number, "proteinG": number, "fatG": number, "carbsG": number, "sugarG": number, "sodiumMg": number }, "confidence": "high"|"medium"|"low", "suggestion": { "confirmsRule": boolean, "extra": string|null } }',
@@ -123,7 +136,48 @@ const RESPONSE_SCHEMA = {
   required: ["mealName", "portion", "nutrition", "confidence", "suggestion"],
 };
 
-export async function analyzeMeal(input: AnalyzeInput): Promise<AiEstimate> {
+/**
+ * OpenRouter fallback model used when Gemini is unavailable (quota/429,
+ * 5xx, network). Vision-capable and reliable JSON output.
+ */
+export const OPENROUTER_FALLBACK_MODEL = "openai/gpt-4o-mini";
+
+export interface AnalysisResult {
+  estimate: AiEstimate;
+  /** the model that actually produced the estimate (may differ from the requested one after a fallback) */
+  model: string;
+  provider: "gemini" | "openrouter";
+}
+
+/**
+ * Estimate a meal's nutrition. Primary: Gemini. If Gemini fails (quota,
+ * outage, ...) and OPENROUTER_TOKEN is set, falls back to OpenRouter so the
+ * logbook keeps working. The model actually used is returned and recorded
+ * on the meal.
+ */
+export async function analyzeMeal(input: AnalyzeInput): Promise<AnalysisResult> {
+  try {
+    const estimate = await analyzeWithGemini(input);
+    return { estimate, model: input.model, provider: "gemini" };
+  } catch (err) {
+    const fallbackKey = process.env.OPENROUTER_TOKEN;
+    if (fallbackKey) {
+      try {
+        const estimate = await analyzeWithOpenRouter(input, fallbackKey);
+        return {
+          estimate,
+          model: process.env.OPENROUTER_MODEL || OPENROUTER_FALLBACK_MODEL,
+          provider: "openrouter",
+        };
+      } catch {
+        // keep the original Gemini error - it is the more relevant one
+      }
+    }
+    throw err;
+  }
+}
+
+async function analyzeWithGemini(input: AnalyzeInput): Promise<AiEstimate> {
   const parts: Array<Record<string, unknown>> = [{ text: buildPrompt(input) }];
   if (input.imageDataUri) {
     const { mime, data } = splitDataUri(input.imageDataUri);
@@ -173,6 +227,56 @@ export async function analyzeMeal(input: AnalyzeInput): Promise<AiEstimate> {
   if (!text) {
     const reason = json?.promptFeedback?.blockReason ?? "empty response";
     throw new Error(`Gemini returned no content (${reason})`);
+  }
+
+  const parsed = parseAiJson(text);
+  return nutritionSchema.parse(parsed);
+}
+
+async function analyzeWithOpenRouter(
+  input: AnalyzeInput,
+  apiKey: string
+): Promise<AiEstimate> {
+  const content: Array<Record<string, unknown>> = [
+    { type: "text", text: buildPrompt(input) },
+  ];
+  if (input.imageDataUri) {
+    content.push({
+      type: "image_url",
+      image_url: { url: input.imageDataUri },
+    });
+  }
+
+  let res: Response;
+  try {
+    res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: process.env.OPENROUTER_MODEL || OPENROUTER_FALLBACK_MODEL,
+        messages: [{ role: "user", content }],
+        response_format: { type: "json_object" },
+        max_tokens: 1024,
+        temperature: 0.4,
+      }),
+      signal: AbortSignal.timeout(45000),
+    });
+  } catch (err) {
+    throw new Error(`OpenRouter request failed: ${(err as Error).message}`);
+  }
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`OpenRouter API error ${res.status}: ${body.slice(0, 300)}`);
+  }
+
+  const json = await res.json();
+  const text = json?.choices?.[0]?.message?.content ?? "";
+  if (!text) {
+    throw new Error("OpenRouter returned no content");
   }
 
   const parsed = parseAiJson(text);

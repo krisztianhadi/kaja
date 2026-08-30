@@ -12,6 +12,7 @@ export interface MealDto {
   portion: string;
   confidence: string;
   source: string;
+  model: string | null;
   nutrition: Nutrition;
   suggestion: Suggestion | null;
   createdAt: string;

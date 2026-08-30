@@ -21,6 +21,9 @@ cp .env.example .env
 | `SESSION_SECRET` | `openssl rand -base64 32` - signs session cookies |
 | `GEMINI_TOKEN` | Gemini API key (BYOK, free tier) |
 | `GEMINI_MODEL` | Optional, default `gemini-3-flash-preview` (2.5-flash is deprecated for new keys) |
+| `GEMINI_MODEL_BETTER` | Optional, stronger model for the "Analyze again" escalation, default `gemini-3.6-flash` |
+| `OPENROUTER_TOKEN` | Optional. When set, meal analysis falls back to OpenRouter automatically if Gemini is unavailable (quota/429, outage) |
+| `OPENROUTER_MODEL` | Optional fallback model, default `openai/gpt-4o-mini` (vision-capable) |
 | `APP_URL` | Public origin (used for absolute URLs) |
 | `USERS_JSON` | Optional JSON array of `{ username, password }` (deployments) |
 
