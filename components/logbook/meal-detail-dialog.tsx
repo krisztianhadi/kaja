@@ -73,14 +73,6 @@ export function MealDetailDialog({
             <NutritionGrid nutrition={meal.nutrition} />
             {meal.suggestion && <SuggestionBlock suggestion={meal.suggestion} />}
             <div className="space-y-2">
-              <Button
-                onClick={onLogAgain}
-                disabled={busy || deleting}
-                className="w-full"
-              >
-                <RotateCcw className="h-4 w-4" />
-                {busy ? "Recording..." : "Log again"}
-              </Button>
               {onDelete && (
                 <Button
                   variant="outline"
@@ -92,6 +84,14 @@ export function MealDetailDialog({
                   Delete meal
                 </Button>
               )}
+              <Button
+                onClick={onLogAgain}
+                disabled={busy || deleting}
+                className="w-full"
+              >
+                <RotateCcw className="h-4 w-4" />
+                {busy ? "Recording..." : "Log again"}
+              </Button>
               <Button
                 variant="outline"
                 onClick={onClose}
