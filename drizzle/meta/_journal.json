@@ -43,6 +43,13 @@
       "when": 1788076611538,
       "tag": "0005_amazing_satana",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788078373528,
+      "tag": "0006_remarkable_morgan_stark",
+      "breakpoints": true
     }
   ]
 }

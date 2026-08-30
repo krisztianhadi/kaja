@@ -16,6 +16,7 @@ export interface UserDto {
   goal: "maintain" | "lose" | "gain";
   manualKcal: number | null;
   region: string | null;
+  climate: "hot" | "temperate";
   scientific: boolean;
   targetProteinG: number;
   targetFatG: number;

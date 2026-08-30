@@ -31,6 +31,7 @@ export function userDto(user: User) {
     goal: (user.goal ?? "maintain") as Goal,
     manualKcal: user.manualKcal,
     region: user.region,
+    climate: user.climate as "hot" | "temperate",
     scientific: user.scientific,
     targetProteinG: user.targetProteinG,
     targetFatG: user.targetFatG,
@@ -72,6 +73,7 @@ export function userContextText(
     | "goal"
     | "manualKcal"
     | "region"
+    | "climate"
   >,
   budgetKcal: number | null
 ): string {
@@ -80,6 +82,11 @@ export function userContextText(
   if (user.goals) lines.push(`- Goals: ${user.goals}`);
   if (user.diet) lines.push(`- Ongoing diet: ${user.diet}`);
   if (user.region) lines.push(`- Location: ${user.region}`);
+  if (user.climate === "hot") {
+    lines.push(
+      "- Climate: hot and humid - the user sweats a lot, so sodium and mineral needs are higher than usual; keep suggestions practical (hydration, electrolytes)."
+    );
+  }
   const profile = profileContextText({
     heightCm: user.heightCm,
     weightKg: user.weightKg,

@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "climate" text DEFAULT 'temperate' NOT NULL;

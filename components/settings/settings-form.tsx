@@ -93,6 +93,9 @@ export function SettingsForm() {
   );
   const [scientific, setScientific] = useState(user?.scientific ?? false);
   const [region, setRegion] = useState(user?.region ?? "");
+  const [climate, setClimate] = useState<"hot" | "temperate">(
+    user?.climate ?? "temperate"
+  );
   const [targets, setTargets] = useState({
     targetProteinG: user?.targetProteinG ?? 50,
     targetFatG: user?.targetFatG ?? 70,
@@ -159,6 +162,7 @@ export function SettingsForm() {
           ? Math.round(Number(manualKcal))
           : null,
       region: region === "" ? null : region,
+      climate,
       scientific,
       ...targets,
     };
@@ -276,6 +280,22 @@ export function SettingsForm() {
               </select>
               <p className="text-xs text-muted-foreground">
                 Suggestions will name dishes that are easy to find here.
+              </p>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="climate">Climate</Label>
+              <select
+                id="climate"
+                className={selectClass}
+                value={climate}
+                onChange={(e) => setClimate(e.target.value as "hot" | "temperate")}
+              >
+                <option value="temperate">Temperate</option>
+                <option value="hot">Hot and humid</option>
+              </select>
+              <p className="text-xs text-muted-foreground">
+                Hot climates raise the sodium target by 500mg - sweating
+                increases sodium needs.
               </p>
             </div>
           </CardContent>

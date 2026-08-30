@@ -11,11 +11,26 @@ function formatNumber(n: number): string {
   return Number.isFinite(n) ? String(Math.round(n * 10) / 10) : "-";
 }
 
+function mealTip(n: Nutrition): string | null {
+  if (n.sodiumMg >= 900 && n.sugarG >= 25) {
+    return "Salty and sweet - drink extra water to help flush it out.";
+  }
+  if (n.sodiumMg >= 900) {
+    return "Salty meal - drink an extra glass of water to help flush the salt.";
+  }
+  if (n.sugarG >= 25) {
+    return "Sweet meal - water or unsweetened tea helps.";
+  }
+  return null;
+}
+
 export function SuggestionBlock({
   suggestion,
+  nutrition,
   className,
 }: {
   suggestion: Suggestion;
+  nutrition?: Nutrition;
   className?: string;
 }) {
   // only the AI's suggestion is shown; the repetitive rule-based message
@@ -38,11 +53,16 @@ export function SuggestionBlock({
             icon: <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />,
           };
 
+  const tip = nutrition ? mealTip(nutrition) : null;
+
   return (
     <div className={cn("rounded-xl border p-3 text-sm", tone.bg, className)}>
       <div className="flex items-start gap-2">
         <span className="mt-0.5">{tone.icon}</span>
-        <p>{suggestion.aiExtra}</p>
+        <div className="space-y-1">
+          <p>{suggestion.aiExtra}</p>
+          {tip && <p className="text-xs opacity-80">Tip: {tip}</p>}
+        </div>
       </div>
     </div>
   );
@@ -104,7 +124,7 @@ export function MealResult({
           </div>
         </div>
         <NutritionGrid nutrition={data.meal.nutrition} />
-        <SuggestionBlock suggestion={data.suggestion} />
+        <SuggestionBlock suggestion={data.suggestion} nutrition={data.meal.nutrition} />
         {data.meal.confidence !== "high" && data.meal.id && (
           <ReanalyzeButton
             mealId={data.meal.id}

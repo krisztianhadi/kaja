@@ -19,6 +19,11 @@
   above 115% of the target instead of 100% (a normal salty meal can sit at
   100-115% of the DV). Cleaned up stale test targets on the demo user
   (sodium 1500 -> 2300).
+- [Feature] Climate setting (Settings > Profile): "Hot and humid" raises
+  the sodium target by 500mg (heavy sweating increases sodium needs) and
+  tells the AI to keep suggestions practical (hydration, electrolytes).
+  Salty/sweet meals now get a deterministic hydration tip in the feedback
+  ("Salty meal - drink an extra glass of water to help flush the salt").
 - [Change] Migrated the UI to the shadcn/ui component system (same stack as
   Ghosted): `components/ui/*` with cva variants, Radix primitives (Dialog,
   Label, Progress, Slot), `clsx` + `tailwind-merge` (`cn` in lib/utils.ts)

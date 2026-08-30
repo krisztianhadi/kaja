@@ -73,6 +73,9 @@ export async function PATCH(request: Request) {
     if (d.region !== undefined) {
       update.region = d.region === "" ? null : d.region; // "" clears it
     }
+    if (d.climate !== undefined) {
+      update.climate = d.climate;
+    }
     if (d.scientific !== undefined) {
       update.scientific = d.scientific;
     }

@@ -22,9 +22,22 @@ export const DEFAULT_TARGETS: Targets = {
   sodiumMg: 2300,
 };
 
+/** Hot climates: heavy sweating raises sodium needs - modest allowance. */
+export const HOT_CLIMATE_SODIUM_BUMP = 500;
+
 export function targetsFromUser(
-  user: Pick<User, "manualKcal" | "targetProteinG" | "targetFatG" | "targetCarbsG" | "targetSugarG" | "targetSodiumMg">
+  user: Pick<
+    User,
+    | "manualKcal"
+    | "targetProteinG"
+    | "targetFatG"
+    | "targetCarbsG"
+    | "targetSugarG"
+    | "targetSodiumMg"
+    | "climate"
+  >
 ): Targets {
+  const sodiumBase = user.targetSodiumMg || DEFAULT_TARGETS.sodiumMg;
   return {
     // kcal placeholder: the effective value comes from the BMR/TDEE budget
     // via targetsWithBudget() - see lib/budget.ts
@@ -33,7 +46,8 @@ export function targetsFromUser(
     fatG: user.targetFatG || DEFAULT_TARGETS.fatG,
     carbsG: user.targetCarbsG || DEFAULT_TARGETS.carbsG,
     sugarG: user.targetSugarG || DEFAULT_TARGETS.sugarG,
-    sodiumMg: user.targetSodiumMg || DEFAULT_TARGETS.sodiumMg,
+    sodiumMg:
+      sodiumBase + (user.climate === "hot" ? HOT_CLIMATE_SODIUM_BUMP : 0),
   };
 }
 

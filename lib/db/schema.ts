@@ -40,6 +40,8 @@ export const users = pgTable("users", {
   goal: text("goal").notNull().default("maintain"), // maintain|lose|gain
   // where the user lives - the AI suggests locally available dishes
   region: text("region"),
+  // environment: hot climates raise sodium needs (sweat losses)
+  climate: text("climate").notNull().default("temperate"), // hot|temperate
   // exact numbers (g/kcal/mg) on the main screen; false = percentages only
   scientific: boolean("scientific").notNull().default(false),
   // null = use server GEMINI_TOKEN
