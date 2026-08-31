@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { requireUser } from "@/lib/server";
+export const dynamic = "force-dynamic";
+
 
 export async function GET() {
   try {

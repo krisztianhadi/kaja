@@ -15,6 +15,8 @@ import { mealToDto, dayKeyFor } from "@/lib/stats";
 import { parseBackdate } from "@/lib/backdate";
 import { budgetForDay, getOverrideMode } from "@/lib/override";
 import { rateLimitAi } from "@/lib/rate-limit";
+export const dynamic = "force-dynamic";
+
 
 const MS_DAY = 86_400_000;
 

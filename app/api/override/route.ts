@@ -3,6 +3,8 @@ import { z } from "zod";
 import { requireUser, jsonError } from "@/lib/server";
 import { dayKeyFor } from "@/lib/stats";
 import { setOverride, budgetForDay } from "@/lib/override";
+export const dynamic = "force-dynamic";
+
 
 const bodySchema = z.object({
   mode: z.enum(["usual", "more", "less"]),

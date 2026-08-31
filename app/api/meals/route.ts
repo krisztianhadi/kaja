@@ -16,6 +16,8 @@ import { budgetForDay, getOverrideMode } from "@/lib/override";
 import { fetchVisibleMeals, recordMeal } from "@/lib/meal-service";
 import { mealToDto, dayKeyFor } from "@/lib/stats";
 import { parseBackdate } from "@/lib/backdate";
+export const dynamic = "force-dynamic";
+
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024;
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);

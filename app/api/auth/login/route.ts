@@ -8,6 +8,8 @@ import { ensureUsers } from "@/lib/auth/seed-users";
 import { loginSchema } from "@/lib/validators";
 import { jsonError, userDto } from "@/lib/server";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+export const dynamic = "force-dynamic";
+
 
 export async function POST(request: Request) {
   const rl = rateLimit(clientIp(request));

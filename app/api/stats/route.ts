@@ -5,6 +5,8 @@ import { targetsFromUser, type Targets } from "@/lib/nutrition";
 import { targetsWithBudget, type OverrideMode } from "@/lib/budget";
 import { fetchVisibleMeals } from "@/lib/meal-service";
 import { budgetForDay, getOverrideMode } from "@/lib/override";
+export const dynamic = "force-dynamic";
+
 
 const MS_DAY = 86_400_000;
 

@@ -5,6 +5,8 @@ import { meals } from "@/lib/db/schema";
 import { requireUser, jsonError } from "@/lib/server";
 import { mealScaleForUser } from "@/lib/nutrition";
 import { recordMeal } from "@/lib/meal-service";
+export const dynamic = "force-dynamic";
+
 
 /**
  * Re-record a previous meal from the card stack: copies the stored nutrition

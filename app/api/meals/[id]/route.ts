@@ -5,6 +5,8 @@ import { meals } from "@/lib/db/schema";
 import { requireUser, jsonError } from "@/lib/server";
 import { mealScaleForUser } from "@/lib/nutrition";
 import { mealToDto } from "@/lib/stats";
+export const dynamic = "force-dynamic";
+
 
 /** Full meal detail incl. photo - visibility-scoped (reads are shared). */
 export async function GET(
