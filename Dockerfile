@@ -4,7 +4,9 @@ FROM node:22-alpine AS base
 # Pin pnpm deterministically — corepack can resolve "latest" (11.x), and
 # pnpm 11's verify-deps-before-run re-runs install at startup and fails on
 # unapproved build scripts in non-TTY. Pin 10.12.1 (proven on Railway).
-RUN npm install -g pnpm@10.12.1
+# corepack disable: node images ship pnpm shims that shadow npm's global
+# install, so `pnpm` would still resolve to corepack's 11.x otherwise.
+RUN npm install -g pnpm@10.12.1 && corepack disable && pnpm --version
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 
