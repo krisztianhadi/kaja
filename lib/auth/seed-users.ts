@@ -35,19 +35,28 @@ export function loadConfigUsers(): ConfigUser[] {
 /**
  * Upsert every configured user. Existing users are never modified (password,
  * bio, targets stay as edited in Settings). Idempotent - safe to call often.
+ * Runs once per server process (first login) - config users are created at
+ * startup, not on every request.
  */
+let ensurePromise: Promise<void> | null = null;
+
 export async function ensureUsers(): Promise<void> {
-  const config = loadConfigUsers();
-  for (const u of config) {
-    if (!u.username || !u.password) continue;
-    const existing = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.username, u.username))
-      .limit(1);
-    if (existing.length === 0) {
-      const passwordHash = await hashPassword(u.password);
-      await db.insert(users).values({ username: u.username, passwordHash });
-    }
+  if (!ensurePromise) {
+    ensurePromise = (async () => {
+      const config = loadConfigUsers();
+      for (const u of config) {
+        if (!u.username || !u.password) continue;
+        const existing = await db
+          .select({ id: users.id })
+          .from(users)
+          .where(eq(users.username, u.username))
+          .limit(1);
+        if (existing.length === 0) {
+          const passwordHash = await hashPassword(u.password);
+          await db.insert(users).values({ username: u.username, passwordHash });
+        }
+      }
+    })();
   }
+  return ensurePromise;
 }

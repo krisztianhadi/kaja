@@ -33,7 +33,9 @@ export async function PATCH(request: Request) {
     }
     const d = parsed.data;
 
-    const update: Record<string, unknown> = {};
+    // typed against the actual table - a typo in a column name now fails
+    // at compile time instead of silently updating nothing
+    const update: Partial<typeof users.$inferInsert> = {};
 
     if (d.password) {
       const currentPassword = String(
