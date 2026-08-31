@@ -64,6 +64,20 @@ Required environment variables in production:
 
 After first deploy, change passwords in Settings.
 
+## Tests
+
+```bash
+pnpm test         # unit tests (vitest): backdate, meal classification,
+                  #   BMR/budget math, shared-meal scoping - no DB needed
+pnpm test:e2e     # browser a11y audits (Playwright + axe) on the key
+                  #   routes - needs the dev server on :3100 (or CI's
+                  #   Postgres + USERS_JSON-seeded demo user)
+```
+
+CI (`.github/workflows/ci.yml`) runs three jobs on every push/PR:
+lint + typecheck + `next build`, the unit tests, and the axe audits
+against a fresh Postgres with a seeded demo user.
+
 ## PWA
 
 Installable: `public/manifest.webmanifest`, icons in `public/icons/`,

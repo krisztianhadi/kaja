@@ -15,7 +15,8 @@
     "db:seed-data": "tsx --tsconfig tsconfig.json scripts/seed-demo-data.ts",
     "migrate-on-start": "node scripts/migrate-on-start.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",
@@ -39,6 +40,8 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.62.1",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

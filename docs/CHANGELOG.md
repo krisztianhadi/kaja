@@ -2,6 +2,12 @@
 
 ## 2026-08-31
 
+- [Fix] CI + a11y: GitHub Actions workflow (lint/typecheck/build, unit
+  tests, axe audits), Playwright + axe-core added as devDependencies,
+  and four real a11y issues the audits caught were fixed: login page
+  had no `<main>` landmark (content outside any region), app pages had
+  no `h1`, and the dashboard's section headings skipped levels
+  (h3 without h2). All routes now audit clean.
 - [Fix] Railway build: escaped raw quotes/apostrophes in JSX text and
   cleaned a hooks dependency warning that `next build` treated as errors.
 
