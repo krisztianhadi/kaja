@@ -64,6 +64,12 @@ Required environment variables in production:
 
 After first deploy, change passwords in Settings.
 
+Note: the Dockerfile deliberately pins `pnpm@10.12.1` (via `npm install -g`),
+not corepack's pnpm 11. pnpm 11's `verify-deps-before-run` re-runs
+`pnpm install` at container startup and fails on unapproved build scripts
+in non-TTY, which crash-looped the container on Railway. Do not upgrade
+pnpm in the Dockerfile without re-testing the full deploy.
+
 ## Tests
 
 ```bash
