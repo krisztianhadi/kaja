@@ -38,7 +38,9 @@
       hsl(var(--background)) 0%,
       hsl(38 50% 93%) 100%
     );
-    background-attachment: fixed;
+    /* NO background-attachment: fixed - it makes iOS Safari render a
+       blank screen after client-side route changes (known WebKit bug);
+       the gradient scrolls with the page instead */
   }
 
   .dark {
