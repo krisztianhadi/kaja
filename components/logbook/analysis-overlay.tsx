@@ -74,7 +74,7 @@ export function AnalysisOverlay({
   label?: string;
 }) {
   // random set per analysis, stable for the whole run
-  const foodIcons = useMemo(() => pickIcons(LANES.length), [show]);
+  const foodIcons = useMemo(() => pickIcons(LANES.length), []);
   if (!show) return null;
   return (
     <div

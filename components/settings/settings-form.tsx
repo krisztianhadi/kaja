@@ -326,7 +326,7 @@ export function SettingsForm() {
               </select>
               <p className="text-xs text-muted-foreground">
                 Hot climates raise the sodium target by 500mg - sweating
-                increases sodium needs. An "Active" day adds another 250mg.
+                increases sodium needs. An &quot;Active&quot; day adds another 250mg.
               </p>
             </div>
           </CardContent>
