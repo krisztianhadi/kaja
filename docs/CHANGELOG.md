@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-08-31
+
+- [Fix] Railway build: escaped raw quotes/apostrophes in JSX text and
+  cleaned a hooks dependency warning that `next build` treated as errors.
+
+- [Fix] Empty budget card now nudges to log the first meal of the day
+  ("Nothing logged yet today - record your first meal...") instead of
+  showing only the title.
+
+- [Fix] Security batch (from full-source review): shared-meal writes
+  (DELETE/reanalyze) are author-only; participant validation uses
+  `inArray` (the old `and(eq...)` was always false for 2+); login rate
+  limiter takes the proxy-appended X-Forwarded-For entry; paid AI calls
+  are rate-limited (15/hour/user); 502s no longer leak upstream error
+  bodies; login `?next=` only accepts relative paths (no open redirect).
+
+- [Fix] Stats responses omit base64 photos (tens of MB for a family
+  week) - the detail dialog fetches the photo on demand via a new
+  `GET /api/meals/[id]`. Meal visibility now filters in SQL
+  (author or participant jsonb containment) instead of in JS.
+
+- [Change] Config users are seeded once per server process instead of
+  on every login attempt; the settings PATCH update is typed against
+  the schema.
+
+- [Test] Vitest suite (26 tests) for backdate, meal classification,
+  BMR/budget math and shared-meal scoping.
+
 ## 2026-08-30
 
 - [Feature] Non-food handling: the AI flags items that are not food

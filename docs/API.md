@@ -33,7 +33,13 @@ Returns `{ meals: MealDto[] }` - meals the user can see (authored or shared
 with them), newest first. `MealDto` = `{ id, authorId, participantIds,
 description, imageData, mealName, portion, confidence, source, nutrition,
 suggestion, createdAt }` where `nutrition = { kcal, proteinG, fatG, carbsG,
-sugarG, sodiumMg }`.
+sugarG, sodiumMg }`. The logbook list includes photos; stats responses
+omit `imageData` ("" for none) and the client fetches the photo via
+`GET /api/meals/[id]` when a meal detail is opened.
+
+### `GET /api/meals/[id]`
+Returns `{ meal: MealDto }` - the full meal including the base64 photo.
+Visibility-scoped like the list (authored or shared with the user).
 
 ### `POST /api/meals`
 Multipart form: `description` (text, optional if photo), `imageData` (base64
@@ -50,11 +56,13 @@ Relative time words in the description backdate the meal:
 "yesterday", "last night", "N days ago", "the day before yesterday",
 "this morning". The phrase is removed from the text sent to the AI.
 
-Errors: 400 (invalid input), 503 (no Gemini key configured), 502 (analysis
-failed).
+Errors: 400 (invalid input), 429 (hourly AI analysis limit reached),
+503 (no Gemini key configured), 502 (analysis failed - generic message,
+details are logged server-side).
 
 ### `DELETE /api/meals/[id]`
-Deletes a meal the user can see (authored or shared with them). Returns
+Deletes a meal the user authored (writes are author-only; shared meals can
+be read by all participants but only deleted by the author). Returns
 `{ ok: true }`.
 
 ### `POST /api/meals/[id]/reanalyze`
