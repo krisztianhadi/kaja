@@ -282,9 +282,9 @@ function DailyView({
         <p className="text-sm text-muted-foreground">No meals on this day.</p>
       ) : (
         <div className="space-y-2">
-          <h3 className="px-1 text-sm font-medium text-muted-foreground">
+          <h2 className="px-1 text-sm font-medium text-muted-foreground">
             Meals
-          </h3>
+          </h2>
           {day.meals.map((m) => (
             <MealCard
               key={m.id}
@@ -317,7 +317,7 @@ function WeeklyView({ data, showPct }: { data: StatsResponse; showPct: boolean }
     <div className="space-y-4">
       <Card>
         <CardContent className="space-y-2 pt-4">
-          <h3 className="text-sm font-medium">Last 7 days - kcal per day</h3>
+          <h2 className="text-sm font-medium">Last 7 days - kcal per day</h2>
           <KcalBars days={days} scope={data.scope} />
         </CardContent>
       </Card>
@@ -347,7 +347,7 @@ function MonthlyView({ data, showPct }: { data: StatsResponse; showPct: boolean 
     <div className="space-y-4">
       <Card>
         <CardContent className="space-y-2 pt-4">
-          <h3 className="text-sm font-medium">Last 30 days - kcal per day</h3>
+          <h2 className="text-sm font-medium">Last 30 days - kcal per day</h2>
           <div className="flex h-32 items-end gap-0.5">
             {days.map((d, i) => {
               const max = Math.max(...days.map((x) => x.totals.kcal), 1);

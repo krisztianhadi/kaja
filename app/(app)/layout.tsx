@@ -25,6 +25,7 @@ export default async function AppLayout({
           <div className="min-h-screen">
             <Nav />
             <main className="mx-auto w-full max-w-2xl px-4 pb-28 pt-4">
+              <h1 className="sr-only">Kaja</h1>
               {children}
             </main>
           </div>

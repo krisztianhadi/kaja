@@ -47,7 +47,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
+    <main className="flex min-h-screen items-center justify-center px-4">
       <Card className="w-full max-w-sm">
         <CardContent className="pt-6">
           <div className="mb-6 flex flex-col items-center gap-3 text-center">
@@ -98,7 +98,7 @@ function LoginForm() {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }
 
