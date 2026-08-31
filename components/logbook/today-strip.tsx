@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Lightbulb } from "lucide-react";
+import { Coffee, Lightbulb } from "lucide-react";
 import { api, tzOffsetMinutes } from "@/lib/api";
 import { cn } from "@/lib/cn";
 import { severityClass } from "@/lib/severity";
@@ -64,7 +64,7 @@ export function TodayStrip() {
 
   return (
     <div className="rounded-2xl border bg-card p-4 shadow-soft">
-      <div className="text-xs text-muted-foreground">Today's budget</div>
+      <div className="text-xs text-muted-foreground">Today&apos;s budget</div>
       {scientific && (
         <div className="text-2xl font-bold">{fmt(budget.kcal)} kcal</div>
       )}
@@ -75,6 +75,16 @@ export function TodayStrip() {
       {!budget.complete && (
         <div className="mt-0.5 text-xs text-muted-foreground">
           Add age and gender in Settings for an accurate budget.
+        </div>
+      )}
+
+      {totals && totals.meals === 0 && (
+        <div className="mt-4 flex items-center gap-2.5 rounded-xl border border-dashed border-border bg-background/40 px-3.5 py-3">
+          <Coffee className="h-4 w-4 shrink-0 text-primary/60" />
+          <p className="text-sm text-muted-foreground">
+            Nothing logged yet today - record your first meal and the budget
+            comes to life.
+          </p>
         </div>
       )}
 
