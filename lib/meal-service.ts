@@ -2,7 +2,7 @@ import { desc, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { meals, type Meal, type NewMeal } from "@/lib/db/schema";
 import { mealToDto, dayKeyFor } from "@/lib/stats";
-import { mealScaleForUser, totalsForMeals, type Totals } from "./nutrition";
+import { totalsForMeals, type Totals } from "./nutrition";
 import type { MealDto } from "./types";
 
 const MS_DAY = 86_400_000;
@@ -13,14 +13,17 @@ export async function fetchVisibleMeals(
   sinceMs: number,
   limit = 200
 ): Promise<Meal[]> {
-  const rows = await db
+  // filter in SQL, not JS: authored by the user OR shared with them
+  // (participantIds @> [userId]). ISO string, not Date: postgres.js
+  // non-prepared mode rejects Date params.
+  return db
     .select()
     .from(meals)
-    // ISO string, not Date: postgres.js non-prepared mode rejects Date params
-    .where(sql`${meals.createdAt} > ${new Date(sinceMs).toISOString()}`)
+    .where(
+      sql`${meals.createdAt} > ${new Date(sinceMs).toISOString()} AND (${meals.authorId} = ${userId} OR ${meals.participantIds} @> ${JSON.stringify([userId])}::jsonb)`
+    )
     .orderBy(desc(meals.createdAt))
     .limit(limit);
-  return rows.filter((m) => mealScaleForUser(m, userId) > 0);
 }
 
 export interface RecordResult {

@@ -7,7 +7,7 @@ export interface MealDto {
   authorId: string;
   participantIds: string[];
   description: string;
-  imageData: string; // base64 data URI, "" = none
+  imageData: string; // base64 data URI, "" = none (stats responses omit it)
   mealName: string;
   portion: string;
   confidence: string;

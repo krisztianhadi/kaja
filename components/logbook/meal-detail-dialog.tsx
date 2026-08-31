@@ -1,10 +1,11 @@
 /* eslint-disable @next/next/no-img-element -- photos are base64 data URIs, next/image adds nothing */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { RotateCcw, Trash2, X } from "lucide-react";
 import type { MealDto } from "@/lib/types";
+import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,6 +19,8 @@ import { NutritionGrid, SuggestionBlock } from "./meal-result";
  * Meal detail dialog: photo, original feedback, datasheet, then the
  * Delete action (opens a separate confirmation dialog) above the
  * Log again / Close actions. Shared by the logbook and stats views.
+ * Stats responses omit photos - the dialog fetches the full meal
+ * (including the image) on demand when the passed one has none.
  */
 export function MealDetailDialog({
   meal,
@@ -35,44 +38,64 @@ export function MealDetailDialog({
   onDelete?: () => void;
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [full, setFull] = useState<MealDto | null>(null);
+  const mealId = meal.id;
+  const hasImage = !!meal.imageData;
+
+  // stats-sourced meals have no photo - fetch the full record once
+  useEffect(() => {
+    if (hasImage) {
+      setFull(null);
+      return;
+    }
+    let alive = true;
+    api<{ meal: MealDto }>(`/api/meals/${mealId}`)
+      .then((res) => alive && setFull(res.meal))
+      .catch(() => alive && setFull(null));
+    return () => {
+      alive = false;
+    };
+  }, [mealId, hasImage]);
+
+  const shown = full ?? meal;
 
   return (
     <>
       <Dialog open onOpenChange={(open) => !open && onClose()}>
         <DialogContent>
           <div className="space-y-3">
-            {meal.imageData && (
+            {shown.imageData && (
               <img
-                src={meal.imageData}
+                src={shown.imageData}
                 alt=""
                 className="h-40 w-full rounded-xl object-cover"
               />
             )}
             <div>
               <DialogTitle className="text-base font-medium">
-                {meal.mealName || meal.description || "Meal"}
+                {shown.mealName || shown.description || "Meal"}
               </DialogTitle>
               <DialogDescription className="mt-0.5 text-xs">
                 {[
-                  meal.portion,
-                  meal.participantIds.length > 1
-                    ? `shared by ${meal.participantIds.length}`
+                  shown.portion,
+                  shown.participantIds.length > 1
+                    ? `shared by ${shown.participantIds.length}`
                     : "",
-                  formatDistanceToNow(new Date(meal.createdAt), {
+                  formatDistanceToNow(new Date(shown.createdAt), {
                     addSuffix: true,
                   }),
-                  meal.source === "repeat"
+                  shown.source === "repeat"
                     ? "re-recorded from cache"
-                    : `AI estimate (${meal.confidence} confidence)`,
-                  meal.model ?? "",
+                    : `AI estimate (${shown.confidence} confidence)`,
+                  shown.model ?? "",
                 ]
                   .filter(Boolean)
                   .join(" - ")}
               </DialogDescription>
             </div>
-            <NutritionGrid nutrition={meal.nutrition} />
-            {meal.suggestion && (
-<SuggestionBlock suggestion={meal.suggestion} />
+            <NutritionGrid nutrition={shown.nutrition} />
+            {shown.suggestion && (
+<SuggestionBlock suggestion={shown.suggestion} />
               )}
             <div className="space-y-2">
               {onDelete && (
@@ -116,8 +139,8 @@ export function MealDetailDialog({
                 Delete this meal?
               </DialogTitle>
               <DialogDescription>
-                {meal.mealName || meal.description || "Meal"} -{" "}
-                {Math.round(meal.nutrition.kcal)} kcal
+                {shown.mealName || shown.description || "Meal"} -{" "}
+                {Math.round(shown.nutrition.kcal)} kcal
               </DialogDescription>
               <div className="space-y-2">
                 <Button

@@ -32,13 +32,13 @@ export function rangeKeys(anchorKey: string, range: Range): string[] {
   return keys;
 }
 
-export function mealToDto(meal: Meal): MealDto {
+export function mealToDto(meal: Meal, includeImage = true): MealDto {
   return {
     id: meal.id,
     authorId: meal.authorId,
     participantIds: meal.participantIds ?? [],
     description: meal.description,
-    imageData: meal.imageData,
+    imageData: includeImage ? (meal.imageData ?? "") : "",
     mealName: meal.mealName,
     portion: meal.portion,
     confidence: meal.confidence,
@@ -83,7 +83,9 @@ export function computeStats(
     );
     const totals: Totals = emptyTotals();
     for (const meal of list) addMeal(totals, meal, mealScaleForUser(meal, userId));
-    return { date: key, totals, meals: list.map(mealToDto) };
+    // stats responses omit photos - a full day of meals can hold tens of MB
+    // of base64; the detail dialog fetches the photo on demand
+    return { date: key, totals, meals: list.map((m) => mealToDto(m, false)) };
   });
 
   let daysWithMeals = 0;
