@@ -14,6 +14,25 @@ jobs:
   lint-typecheck:
     name: Lint & typecheck
     runs-on: ubuntu-latest
+    # next build collects page data, which touches the DB - give it a
+    # real Postgres like the a11y job
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: kaja
+          POSTGRES_PASSWORD: kaja
+          POSTGRES_DB: kaja
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kaja"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://kaja:kaja@localhost:5432/kaja
+      SESSION_SECRET: ci-only-non-secret-please-override
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -24,6 +43,7 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm db:migrate
       - run: pnpm lint
       - run: pnpm typecheck
       # next build re-runs ESLint and fails on errors - the exact check
