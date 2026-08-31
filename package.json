@@ -13,7 +13,9 @@
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx --tsconfig tsconfig.json scripts/seed-users.ts",
     "db:seed-data": "tsx --tsconfig tsconfig.json scripts/seed-demo-data.ts",
-    "migrate-on-start": "node scripts/migrate-on-start.mjs"
+    "migrate-on-start": "node scripts/migrate-on-start.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",
@@ -48,7 +50,8 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.23.12",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.11"
   },
   "engines": {
     "node": ">=20.0.0"
