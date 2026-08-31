@@ -12,7 +12,10 @@ import { Label } from "@/components/ui/label";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/";
+  // only allow relative paths - blocks open-redirect via ?next=https://evil
+  const rawNext = searchParams.get("next") ?? "/";
+  const next =
+    rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

@@ -12,9 +12,9 @@ import { targetsWithBudget } from "@/lib/budget";
 import { ruleSuggestion } from "@/lib/suggestions";
 import { fetchVisibleMeals } from "@/lib/meal-service";
 import { mealToDto, dayKeyFor } from "@/lib/stats";
-import { mealScaleForUser } from "@/lib/nutrition";
 import { parseBackdate } from "@/lib/backdate";
 import { budgetForDay, getOverrideMode } from "@/lib/override";
+import { rateLimitAi } from "@/lib/rate-limit";
 
 const MS_DAY = 86_400_000;
 
@@ -37,8 +37,17 @@ export async function POST(
       .where(eq(meals.id, params.id))
       .limit(1);
 
-    if (!meal || mealScaleForUser(meal, user.id) <= 0) {
+    if (!meal || meal.authorId !== user.id) {
       return jsonError(404, "Meal not found");
+    }
+
+    // paid AI call budget - 15/hour per user
+    const ai = rateLimitAi(user.id);
+    if (!ai.allowed) {
+      return jsonError(
+        429,
+        `Too many analyses this hour - try again in about ${Math.ceil(ai.retryAfterSeconds / 60)} minutes`
+      );
     }
 
     const tzOffsetMin =
@@ -117,7 +126,8 @@ export async function POST(
     });
   } catch (err) {
     if (err instanceof NextResponse) return err;
-    const message = err instanceof Error ? err.message : "Re-analysis failed";
-    return jsonError(502, `Could not re-analyze the meal: ${message}`);
+    // log the real cause server-side, never leak upstream details to the client
+    console.error("meal re-analysis failed:", err);
+    return jsonError(502, "Could not re-analyze the meal - please try again");
   }
 }

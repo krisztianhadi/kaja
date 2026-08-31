@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { and, eq } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { meals, users, type Suggestion } from "@/lib/db/schema";
 import { requireUser, userContextText, geminiApiKey, jsonError } from "@/lib/server";
@@ -10,6 +10,7 @@ import {
   totalsForMeals,
 } from "@/lib/nutrition";
 import { targetsWithBudget } from "@/lib/budget";
+import { rateLimitAi } from "@/lib/rate-limit";
 import { ruleSuggestion } from "@/lib/suggestions";
 import { budgetForDay, getOverrideMode } from "@/lib/override";
 import { fetchVisibleMeals, recordMeal } from "@/lib/meal-service";
@@ -27,7 +28,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const limit = Math.min(Number(url.searchParams.get("limit") ?? "40") || 40, 100);
     const meals = await fetchVisibleMeals(user.id, 0, limit);
-    return NextResponse.json({ meals: meals.map(mealToDto) });
+    return NextResponse.json({ meals: meals.map((m) => mealToDto(m)) });
   } catch (err) {
     if (err instanceof NextResponse) return err;
     throw err;
@@ -65,9 +66,7 @@ export async function POST(request: Request) {
       const valid = await db
         .select({ id: users.id })
         .from(users)
-        .where(
-          and(...participantIds.map((id) => eq(users.id, id)))
-        );
+        .where(inArray(users.id, participantIds));
       const validSet = new Set(valid.map((u) => u.id));
       participantIds = participantIds.filter((id) => validSet.has(id));
     }
@@ -102,6 +101,15 @@ export async function POST(request: Request) {
 
     if (!description && !imageDataUri) {
       return jsonError(400, "Add a description, a photo, or both");
+    }
+
+    // paid AI call budget - 15/hour per user
+    const ai = rateLimitAi(user.id);
+    if (!ai.allowed) {
+      return jsonError(
+        429,
+        `Too many analyses this hour - try again in about ${Math.ceil(ai.retryAfterSeconds / 60)} minutes`
+      );
     }
 
     const tzOffsetMin = Number(form.get("tzOffsetMinutes") ?? "0") || 0;
@@ -192,7 +200,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ meal, totals: todayTotals, suggestion });
   } catch (err) {
     if (err instanceof NextResponse) return err;
-    const message = err instanceof Error ? err.message : "Analysis failed";
-    return jsonError(502, `Could not analyze the meal: ${message}`);
+    // log the real cause server-side, never leak upstream details to the client
+    console.error("meal analysis failed:", err);
+    return jsonError(502, "Could not analyze the meal - please try again");
   }
 }
