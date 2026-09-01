@@ -2,7 +2,6 @@ import { Providers } from "@/components/providers";
 import { UserProvider, type UserDto } from "@/components/user-context";
 import { ToastProvider } from "@/components/toast";
 import { Nav } from "@/components/nav";
-import { PwaRegister } from "@/components/pwa-register";
 import { requireUser, userDto } from "@/lib/server";
 
 export default async function AppLayout({
@@ -21,7 +20,6 @@ export default async function AppLayout({
     <Providers>
       <UserProvider user={user}>
         <ToastProvider>
-          <PwaRegister />
           <div className="min-h-screen">
             <Nav />
             <main className="mx-auto w-full max-w-2xl px-4 pb-28 pt-4">
