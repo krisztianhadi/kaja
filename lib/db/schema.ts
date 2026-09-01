@@ -46,6 +46,8 @@ export const users = pgTable("users", {
   scientific: boolean("scientific").notNull().default(false),
   // null = use server GEMINI_TOKEN
   geminiApiKey: text("gemini_api_key"),
+  // null = use server OPENROUTER_TOKEN; fallback when Gemini fails
+  openrouterApiKey: text("openrouter_api_key"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

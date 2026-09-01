@@ -9,6 +9,7 @@ export const settingsSchema = z.object({
   password: z.string().min(6).max(200).optional(),
   username: z.string().min(1).max(50).optional(),
   geminiApiKey: z.string().max(200).nullable().optional(),
+  openrouterApiKey: z.string().max(200).nullable().optional(),
   bio: z.string().max(2000).optional(),
   goals: z.string().max(2000).optional(),
   diet: z.string().max(2000).optional(),

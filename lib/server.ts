@@ -39,6 +39,7 @@ export function userDto(user: User) {
     targetSugarG: user.targetSugarG,
     targetSodiumMg: user.targetSodiumMg,
     hasOwnApiKey: !!user.geminiApiKey,
+    hasOwnOpenrouterKey: !!user.openrouterApiKey,
   };
 }
 
@@ -104,4 +105,9 @@ export function userContextText(
 /** API key used for Gemini: the user's own override, else the server env key. */
 export function geminiApiKey(user: User): string | null {
   return user.geminiApiKey || process.env.GEMINI_TOKEN || null;
+}
+
+/** OpenRouter fallback key: the user's own override, else the server env key. */
+export function openrouterApiKey(user: User): string | null {
+  return user.openrouterApiKey || process.env.OPENROUTER_TOKEN || null;
 }

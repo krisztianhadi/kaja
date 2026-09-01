@@ -50,6 +50,8 @@ export interface AnalyzeInput {
   /** base64 data URI of a downscaled photo, or null */
   imageDataUri: string | null;
   apiKey: string;
+  /** user's OpenRouter fallback key (Settings), or null to use the server env key */
+  openrouterApiKey?: string | null;
   model: string;
   userContext: string;
   dayTotalsText: string;
@@ -223,7 +225,8 @@ export async function analyzeMeal(input: AnalyzeInput): Promise<AnalysisResult> 
     const estimate = await analyzeWithGemini(input);
     return { estimate, model: input.model, provider: "gemini" };
   } catch (err) {
-    const fallbackKey = process.env.OPENROUTER_TOKEN;
+    // per-user OpenRouter key (Settings) first, else the server env key
+    const fallbackKey = input.openrouterApiKey || process.env.OPENROUTER_TOKEN;
     if (fallbackKey) {
       try {
         const estimate = await analyzeWithOpenRouter(input, fallbackKey);

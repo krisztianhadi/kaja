@@ -24,6 +24,7 @@ export interface UserDto {
   targetSugarG: number;
   targetSodiumMg: number;
   hasOwnApiKey: boolean;
+  hasOwnOpenrouterKey: boolean;
 }
 
 const UserContext = createContext<UserDto | null>(null);

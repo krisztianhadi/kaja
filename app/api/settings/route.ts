@@ -73,6 +73,10 @@ export async function PATCH(request: Request) {
       const key = (d.geminiApiKey ?? "").trim();
       update.geminiApiKey = key === "" ? null : key;
     }
+    if (d.openrouterApiKey !== undefined) {
+      const key = (d.openrouterApiKey ?? "").trim();
+      update.openrouterApiKey = key === "" ? null : key;
+    }
     if (d.heightCm !== undefined) {
       update.heightCm = d.heightCm; // null clears it
     }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { meals, users, type Suggestion } from "@/lib/db/schema";
-import { requireUser, userContextText, geminiApiKey, jsonError } from "@/lib/server";
+import { requireUser, userContextText, geminiApiKey, openrouterApiKey, jsonError } from "@/lib/server";
 import { analyzeMeal, DEFAULT_GEMINI_MODEL, classifyAnalysisFailure, analysisFailureMessage } from "@/lib/gemini";
 import {
   targetsFromUser,
@@ -148,6 +148,7 @@ export async function POST(request: Request) {
       description: clean,
       imageDataUri: imageDataUri || null,
       apiKey,
+      openrouterApiKey: openrouterApiKey(user),
       model: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
       userContext: userContextText(user, budget.kcal),
       dayTotalsText: totalsToText(totalsBefore, targets),

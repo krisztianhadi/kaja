@@ -70,6 +70,7 @@ export function SettingsForm() {
   const { toast } = useToast();
 
   const [apiKey, setApiKey] = useState("");
+  const [orKey, setOrKey] = useState("");
   const [bio, setBio] = useState(user?.bio ?? "");
   const [goals, setGoals] = useState(user?.goals ?? "");
   const [diet, setDiet] = useState(user?.diet ?? "");
@@ -177,6 +178,9 @@ export function SettingsForm() {
     // only touch the API key when the user actually edited it
     if (apiKey.trim() !== "" || user?.hasOwnApiKey) {
       body.geminiApiKey = apiKey.trim();
+    }
+    if (orKey.trim() !== "" || user?.hasOwnOpenrouterKey) {
+      body.openrouterApiKey = orKey.trim();
     }
 
     try {
@@ -522,6 +526,21 @@ export function SettingsForm() {
               <p className="text-xs text-muted-foreground">
                 Bring your own free Gemini key. Unset = the server GEMINI_TOKEN
                 is used.
+              </p>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="orKey">OpenRouter API key (optional)</Label>
+              <Input
+                id="orKey"
+                type="password"
+                value={orKey}
+                onChange={(e) => setOrKey(e.target.value)}
+                placeholder={user?.hasOwnOpenrouterKey ? "Your key is set - leave empty to keep it" : "Leave empty to use the server key"}
+                autoComplete="off"
+              />
+              <p className="text-xs text-muted-foreground">
+                Fallback used when Gemini fails (quota, outage). Unset = the
+                server OPENROUTER_TOKEN is used.
               </p>
             </div>
           </CardContent>

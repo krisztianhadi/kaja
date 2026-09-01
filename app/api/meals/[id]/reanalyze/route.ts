@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { meals, type Suggestion } from "@/lib/db/schema";
-import { requireUser, userContextText, geminiApiKey, jsonError } from "@/lib/server";
+import { requireUser, userContextText, geminiApiKey, openrouterApiKey, jsonError } from "@/lib/server";
 import {
   analyzeMeal,
   DEFAULT_BETTER_GEMINI_MODEL,
@@ -87,6 +87,7 @@ export async function POST(
       description: parseBackdate(meal.description).clean,
       imageDataUri: meal.imageData || null,
       apiKey,
+      openrouterApiKey: openrouterApiKey(user),
       model: betterModel,
       userContext: userContextText(user, budget.kcal),
       dayTotalsText: totalsToText(dayTotals, targets),
