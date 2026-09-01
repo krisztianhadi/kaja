@@ -6,6 +6,8 @@ import { requireUser, userContextText, geminiApiKey, jsonError } from "@/lib/ser
 import {
   analyzeMeal,
   DEFAULT_BETTER_GEMINI_MODEL,
+  classifyAnalysisFailure,
+  analysisFailureMessage,
 } from "@/lib/gemini";
 import { targetsFromUser, totalsToText, totalsForMeals } from "@/lib/nutrition";
 import { targetsWithBudget } from "@/lib/budget";
@@ -128,8 +130,10 @@ export async function POST(
     });
   } catch (err) {
     if (err instanceof NextResponse) return err;
-    // log the real cause server-side, never leak upstream details to the client
+    // log the real cause server-side; tell the user WHY it failed without
+    // leaking the raw upstream error body
     console.error("meal re-analysis failed:", err);
-    return jsonError(502, "Could not re-analyze the meal - please try again");
+    const failure = classifyAnalysisFailure(err);
+    return jsonError(502, analysisFailureMessage(failure));
   }
 }

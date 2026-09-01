@@ -3,7 +3,7 @@ import { inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { meals, users, type Suggestion } from "@/lib/db/schema";
 import { requireUser, userContextText, geminiApiKey, jsonError } from "@/lib/server";
-import { analyzeMeal, DEFAULT_GEMINI_MODEL } from "@/lib/gemini";
+import { analyzeMeal, DEFAULT_GEMINI_MODEL, classifyAnalysisFailure, analysisFailureMessage } from "@/lib/gemini";
 import {
   targetsFromUser,
   totalsToText,
@@ -202,8 +202,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ meal, totals: todayTotals, suggestion });
   } catch (err) {
     if (err instanceof NextResponse) return err;
-    // log the real cause server-side, never leak upstream details to the client
+    // log the real cause server-side; tell the user WHY it failed without
+    // leaking the raw upstream error body
     console.error("meal analysis failed:", err);
-    return jsonError(502, "Could not analyze the meal - please try again");
+    const failure = classifyAnalysisFailure(err);
+    return jsonError(502, analysisFailureMessage(failure));
   }
 }

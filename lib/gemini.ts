@@ -164,6 +164,55 @@ export interface AnalysisResult {
 }
 
 /**
+ * User-safe reason for an analysis failure. Classified from the upstream
+ * error so the app can be transparent about WHY it failed (quota, key,
+ * timeout) without leaking the raw upstream body to the client.
+ */
+export type AnalysisFailure =
+  | "quota"
+  | "invalid-key"
+  | "rate-limited"
+  | "timeout"
+  | "network"
+  | "empty"
+  | "unknown";
+
+export function classifyAnalysisFailure(err: unknown): AnalysisFailure {
+  const msg = err instanceof Error ? err.message : String(err);
+  const low = msg.toLowerCase();
+  // explicit quota exhaustion (Gemini 429 usually says RESOURCE_EXHAUSTED /
+  // "quota exceeded"; OpenRouter says "Rate limit" for 429 - treat bare 429
+  // as rate-limited, quota only when named)
+  if (/(quota|resource exhausted|insufficient)/.test(low)) return "quota";
+  if (/(429|rate limit|too many requests)/.test(low)) return "rate-limited";
+  if (/(401|403|api key|permission|unauthorized|invalid key)/.test(low)) return "invalid-key";
+  if (/(timeout|abort|timed out)/.test(low)) return "timeout";
+  if (/(fetch failed|network|enotfound|econnrefused|getaddrinfo)/.test(low)) return "network";
+  if (/(no content|empty response|blockreason)/.test(low)) return "empty";
+  return "unknown";
+}
+
+/** Friendly copy shown to the user for each failure reason. */
+export function analysisFailureMessage(failure: AnalysisFailure): string {
+  switch (failure) {
+    case "quota":
+      return "The AI quota for the free tier is used up right now - try again later, or add your own Gemini API key in Settings.";
+    case "invalid-key":
+      return "The Gemini API key looks invalid - check it in Settings.";
+    case "rate-limited":
+      return "The AI service is rate-limiting requests right now - wait a minute and try again.";
+    case "timeout":
+      return "The AI service took too long to answer - try again.";
+    case "network":
+      return "Could not reach the AI service - check your connection and try again.";
+    case "empty":
+      return "The AI returned no useful answer - try again.";
+    default:
+      return "Could not analyze the meal - please try again.";
+  }
+}
+
+/**
  * Estimate a meal's nutrition. Primary: Gemini. If Gemini fails (quota,
  * outage, ...) and OPENROUTER_TOKEN is set, falls back to OpenRouter so the
  * logbook keeps working. The model actually used is returned and recorded
