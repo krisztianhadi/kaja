@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { verifySessionToken, SESSION_COOKIE } from "@/lib/auth/token";
 
-const PROTECTED_PAGES = ["/", "/dashboard", "/settings"];
+const PROTECTED_PAGES = ["/logbook", "/dashboard", "/settings"];
 
 async function isSignedIn(request: NextRequest): Promise<boolean> {
   const token = request.cookies.get(SESSION_COOKIE)?.value;
@@ -31,12 +31,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname === "/login" && signedIn) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/logbook", request.url));
   }
 
   return response;
 }
 
 export const config = {
-  matcher: ["/", "/dashboard/:path*", "/settings/:path*", "/login", "/api/:path*"],
+  matcher: ["/logbook/:path*", "/dashboard/:path*", "/settings/:path*", "/login", "/api/:path*"],
 };

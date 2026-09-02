@@ -13,7 +13,7 @@ export async function login(page: Page): Promise<void> {
   await page.fill("#username", DEMO_USER);
   await page.fill("#password", DEMO_PASS);
   await Promise.all([
-    page.waitForURL("**/", { timeout: 20_000 }),
+    page.waitForURL("**/logbook", { timeout: 20_000 }),
     page.click('button[type="submit"]'),
   ]);
 }

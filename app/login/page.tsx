@@ -13,9 +13,9 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   // only allow relative paths - blocks open-redirect via ?next=https://evil
-  const rawNext = searchParams.get("next") ?? "/";
+  const rawNext = searchParams.get("next") ?? "/logbook";
   const next =
-    rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/";
+    rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/logbook";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

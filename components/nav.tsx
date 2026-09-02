@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
 const TABS = [
-  { href: "/", label: "Logbook", icon: BookOpen },
+  { href: "/logbook", label: "Logbook", icon: BookOpen },
   { href: "/dashboard", label: "Stats", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: SettingsIcon },
 ];
@@ -70,7 +70,7 @@ export function Nav() {
   const [signingOut, setSigningOut] = useState(false);
 
   const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+    href === "/logbook" ? pathname === "/logbook" : pathname.startsWith(href);
 
   const isDark =
     mode === "dark" ||

@@ -17,6 +17,11 @@ async function audit(page: import("@playwright/test").Page, name: string) {
   ).toEqual([]);
 }
 
+test("a11y: landing page", async ({ page }) => {
+  await page.goto("/");
+  await audit(page, "/");
+});
+
 test("a11y: login page", async ({ page }) => {
   await page.goto("/login");
   await audit(page, "/login");
@@ -25,9 +30,9 @@ test("a11y: login page", async ({ page }) => {
 test("a11y: logbook + dashboard + settings", async ({ page }) => {
   await login(page);
 
-  // logbook home - wait for the budget card to render
+  // logbook - wait for the budget card to render
   await page.waitForSelector("text=Today");
-  await audit(page, "/");
+  await audit(page, "/logbook");
 
   // dashboard - wait for a stat to render
   await page.goto("/dashboard");
