@@ -67,6 +67,7 @@ export function SettingsForm() {
   const user = useUser();
   const router = useRouter();
   const { mode, setMode } = useTheme();
+
   const { toast } = useToast();
 
   const [apiKey, setApiKey] = useState("");

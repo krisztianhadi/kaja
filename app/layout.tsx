@@ -1,6 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Kiwi_Maru } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme";
+
+/** Kiwi Maru - global app font (experiment: rounded, matches the logo). */
+const kiwi = Kiwi_Maru({
+  weight: ["400", "500"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-kiwi",
+});
 
 export const metadata: Metadata = {
   title: "Kaja - food logbook",
@@ -9,7 +18,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png", sizes: "32x32" },
     ],
     apple: "/icons/apple-touch-icon.png",
   },
@@ -32,9 +41,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={kiwi.variable}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script
+          defer
+          src="https://ramen.lostsignals.studio/script.js"
+          data-website-id="33d09a69-dd0e-48a0-97c8-3010512fdffc"
+          data-cache="true"
+          data-domains="kaja.lostsignals.studio"
+        />
       </head>
       <body>
         <ThemeProvider>{children}</ThemeProvider>

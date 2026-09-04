@@ -5,8 +5,8 @@
 const isProd = process.env.NODE_ENV === "production";
 
 const scriptSrc = isProd
-  ? "'self' 'unsafe-inline'" // no eval in prod
-  : "'self' 'unsafe-inline' 'unsafe-eval'";
+  ? "'self' 'unsafe-inline' https://ramen.lostsignals.studio" // no eval in prod
+  : "'self' 'unsafe-inline' 'unsafe-eval' https://ramen.lostsignals.studio";
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
@@ -25,7 +25,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
-      "connect-src 'self'",
+      "connect-src 'self' https://ramen.lostsignals.studio",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",

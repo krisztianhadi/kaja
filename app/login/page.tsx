@@ -55,7 +55,7 @@ function LoginForm() {
               <UtensilsCrossed className="h-7 w-7" />
             </div>
             <div>
-              <h1 className="text-2xl font-semibold">Kaja</h1>
+              <h1 className="logo-wordmark text-2xl">KAJA</h1>
               <p className="text-sm text-muted-foreground">
                 A food logbook for the family
               </p>

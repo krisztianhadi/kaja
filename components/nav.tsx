@@ -93,9 +93,9 @@ export function Nav() {
     <>
       <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-md">
       <div className="relative mx-auto flex h-14 w-full max-w-2xl items-center gap-3 px-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
+        <Link href="/logbook" className="flex items-center gap-2 font-semibold">
           <UtensilsCrossed className="h-5 w-5 text-primary" />
-          <span>Kaja</span>
+          <span className="logo-wordmark">KAJA</span>
         </Link>
         <div className="ml-auto flex items-center gap-2">
           <Button

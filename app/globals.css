@@ -80,4 +80,29 @@
   select {
     touch-action: manipulation;
   }
+
+  /* base size: slightly larger (17px) - rem text/spacing scale together */
+  html {
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 106.25%; /* 17px base - scales all rem text/spacing up a notch */
+  }
+  /* landing-only: Kiwi Maru on titles (the logo lettering font); app stays system */
+  .landing :is(h1, h2, h3, h4) {
+    font-family: var(--font-kiwi), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700; /* Kiwi has no bold - browser synthesizes from 500 */
+  }
+
+  /* terracotta text selection (was the browser/OS default) */
+  ::selection {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+}
+
+@layer utilities {
+  /* app logo wordmark - Kiwi Maru, matches the logo art */
+  .logo-wordmark {
+    font-family: var(--font-kiwi), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700; /* Kiwi has no bold - browser synthesizes from 500 */
+  }
 }

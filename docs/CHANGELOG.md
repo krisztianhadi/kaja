@@ -1,5 +1,108 @@
 # Changelog
 
+## 2026-09-05
+
+- [Feature] Favicon set regenerated in the Kiwi Maru font: full-bleed
+  terracotta square (primary hsl(18 55% 42%)) with an optically centered
+  cream "K" (Kiwi Maru 500, pixel-verified 0px off-center). Deterministic
+  canvas renderer (.tmp/gen-favicon.mjs, 512px master) -> public/
+  favicon.ico (16/32/48), favicon.png (32), icons/apple-touch-icon.png
+  (180), icons/icon-192.png, icons/icon-512.png. The old DejaVu-font
+  favicon.svg is gone (removed from metadata + disk; text-in-SVG
+  favicons can't rely on the webfont loading).
+- [Feature] Umami analytics embedded (self-hosted tracker): script tag
+  in app/layout.tsx head (https://ramen.lostsignals.studio/script.js,
+  data-website-id 33d09a69..., data-cache, data-domains=
+  kaja.lostsignals.studio so localhost/dev visits are not counted);
+  CSP in next.config.mjs whitelists the ramen origin in script-src and
+  connect-src (script beacon). Same pattern as Ghosted.
+- [Feature] App logo wordmarks ("KAJA") now use the Kiwi Maru font
+  (.logo-wordmark utility in globals.css; app header nav + login page),
+  uppercase with faux-bold 700 (Kiwi ships no bold face). Rest of the
+  app stays on the system stack; landing keeps Kiwi titles only.
+
+## 2026-09-04
+
+- [Feature] Landing page redesign (design direction from a z-ai/glm-5.2
+  review via OpenRouter, adapted to Kaja's cream/terracotta palette -
+  violet ideas from the review were rejected as off-brand; visual QA via
+  the DeepSeek vision API plus deterministic layout probes):
+  - Mockups: single-device per breakpoint - desktop browser frame
+    (slim URL bar, no traffic lights) on sm+, phone mockup only below
+    sm; the mock straddles the terracotta hero band edge. Warm deep
+    shadows.
+  - Hero: terracotta gradient band (ghosted-style inverted band) with a
+    frosted-white pulsing status pill, white benefit-led headline and
+    sub copy; the mockup overlaps the band bottom edge.
+  - Features: icon chips in terracotta tint + hover lift on cards.
+  - CTA band: solid terracotta card with frosted "Coming soon on GitHub"
+    pill (was a muddy primary/10 gradient + dashed chip).
+  - Copy: "no accounts" claim replaced with "no cloud" (the app does have
+    accounts). Focus-visible rings added. axe 0 violations, tsc clean.
+- [Feature] Landing copy reworked around the product position (user
+  brief 2026-09-04): hero "Not just another food tracker"; features
+  reframed as a quiet logbook (snap or type, logbook-not-coach with
+  simple counter-actions, no nagging / neurodivergent-friendly,
+  self-hosted data, works on mobile + any browser, no subscriptions);
+  CTA card now closes with the honest line "The best food tracker? No."
+  - keeps the "do one simple job" voice. Feature icons changed
+  accordingly (Camera, Sparkles, BellOff, Shield, MonitorSmartphone,
+  Wallet).
+- [Fix] Hero now has the frosted "Coming soon on GitHub" pill below the
+  sub copy (top eyebrow pill removed); both hero and CTA-card pills show
+  a small inline GitHub mark. Pills stay non-clickable spans (repo not
+  published yet).
+- [Feature] Round stamp logo in the hero (replaces the plain icon +
+  wordmark lockup). FINAL: the user-authored SVG mark in
+  public/kaja-logo.svg ("KAJA" ringed with dots around a crossed-cutlery
+  center), rendered via img at h-24/sm:h-28 top-center of the hero.
+  Two inline attempts were superseded: a full-circle textPath + lucide
+  UtensilsCrossed version, then a GLM-5.2 arc-seal variant - the user
+  rejected the GLM one and supplied their own vector.
+
+## 2026-09-02
+
+- [Feature] Public landing page at `/` - the app moves behind /login to
+  the logbook at /logbook. Open-source pitch with feature cards, real
+  screenshots of the running app (desktop + phone logbook), GitHub CTA.
+- [Feature] Landing mockups are now honest screenshots of the actual app
+  (real Thai meals + food photos, hot-climate sodium target 2800mg, live
+  budget/chart) instead of hand-drawn placeholder UI. Screenshots live in
+  `public/landing/`.
+- [Fix] Landing copy: no public instance, ever - the product is self-host
+  / BYOK only (users bring their own AI key; a host only sets a server
+  token for their own instance). GitHub repo is not published yet, so the
+  hero and CTA show a single "Coming soon" chip (no live "View/Star it"
+  links to a not-yet-public repo).
+- [Feature] Footer mirrors Ghosted: "Made with ❤ by Lost Signals Studio"
+  + open-source GitHub link.
+- [Fix] Landing CTA reads "Coming soon on GitHub" (no public instance,
+  ever; the repo is not published yet, so no live View/Star links).
+- [Fix] Landing mockups: full-width desktop browser frame with the phone
+  mockup tilted in front at the bottom-right (real app screenshots);
+  browser chrome shows the kaja domain (kaja.lostsignals.studio).
+- Route guard in middleware: anonymous visitors land on the pitch,
+  signed-in users go to /logbook. Verified axe 0 violations, no JS errors,
+  desktop + mobile layouts.
+
+## 2026-09-01
+
+- [Fix] Service worker removed entirely - SW + App Router streaming RSC
+  on iOS Safari is a known bug (blank/stuck pages after navigation) and
+  a cache-first SW also served stale shells after every deploy. Ghosted
+  (the working reference) has no SW. Manifest stays (installability
+  unaffected); offline recording is not valuable for a logbook.
+- [Feature] Transparent AI failure reasons instead of a generic 502: the
+  app classifies the upstream error into a user-safe explanation (quota
+  exhausted, invalid key, rate-limited, timeout, network, empty
+  response) and shows it on the record screen; raw errors stay
+  server-side only.
+- [Feature] Per-user OpenRouter fallback key in Settings > AI (new
+  `openrouter_api_key` column, migration 0007): used when Gemini fails
+  (quota, outage); the server `OPENROUTER_TOKEN` remains the fallback
+  for users without their own key. Same pattern as the existing Gemini
+  key - user-set keys preferred.
+
 ## 2026-08-31
 
 - [Fix] CI + a11y: GitHub Actions workflow (lint/typecheck/build, unit
